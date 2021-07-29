@@ -31,26 +31,26 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
 
     public function fitOrder(ViewEvent $event)
     {
-        $result = $event->getControllerResult();
-        $request = $event->getRequest();
-        $method = $request->getMethod();
+        // $result = $event->getControllerResult();
+        // $request = $event->getRequest();
+        // $method = $request->getMethod();
 
-        if ( $result instanceof Provision ) {
-            if ( $method === "POST" ) {
-                $status = !is_null($result->getStatus()) ? $result->getStatus() : "ORDERED";
-                if ($status === "ORDERED")
-                    $this->provisionNotifier->notifyOrder($result);
+        // if ( $result instanceof Provision ) {
+        //     if ( $method === "POST" ) {
+        //         $status = !is_null($result->getStatus()) ? $result->getStatus() : "ORDERED";
+        //         if ($status === "ORDERED")
+        //             $this->provisionNotifier->notifyOrder($result);
 
-                $result->setStatus($status)
-                       ->setIntegrated(false);
-            }
-            else if ( $method === "PUT" && $result->getStatus() === "ORDERED" && !$result->getIntegrated() ) {
-                $this->integrateProvision($result);
-                $this->axonaut->createExpense($result);
-                $result->setStatus("RECEIVED")
-                       ->setIntegrated(true);
-            }
-        }
+        //         $result->setStatus($status)
+        //                ->setIntegrated(false);
+        //     }
+        //     else if ( $method === "PUT" && $result->getStatus() === "ORDERED" && !$result->getIntegrated() ) {
+        //         $this->integrateProvision($result);
+        //         $this->axonaut->createExpense($result);
+        //         $result->setStatus("RECEIVED")
+        //                ->setIntegrated(true);
+        //     }
+        // }
     }
 
     private function integrateProvision($provision)

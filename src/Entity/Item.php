@@ -110,6 +110,12 @@ class Item
      */
     private $unit;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     * @Groups({"items_read", "orders_read", "order_write", "tourings_read"})
+     */
+    private $stock;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -255,6 +261,18 @@ class Item
     public function setUnit(?string $unit): self
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getStock(): ?float
+    {
+        return $this->stock;
+    }
+
+    public function setStock(?float $stock): self
+    {
+        $this->stock = $stock;
 
         return $this;
     }

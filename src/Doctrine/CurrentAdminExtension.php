@@ -56,7 +56,7 @@ class CurrentAdminExtension implements QueryCollectionExtensionInterface, QueryI
         $request = $this->requestStack->getCurrentRequest();
         $origin = $request->headers->get('origin');
 
-        if ($origin === $this->adminDomain && !$this->auth->isGranted('ROLE_PICKER') && !$this->auth->isGranted('ROLE_SUPERVISOR') && $user instanceof User)
+        if ($origin === $this->adminDomain && !$this->auth->isGranted('ROLE_SELLER') && !$this->auth->isGranted('ROLE_PICKER') && !$this->auth->isGranted('ROLE_SUPERVISOR') && $user instanceof User)
         {
             $rootAlias = $queryBuilder->getRootAliases()[0];
             $userGroup = $this->userGroupDefiner->getUserGroup($user);

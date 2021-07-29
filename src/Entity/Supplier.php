@@ -30,32 +30,32 @@ class Supplier
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"suppliers_read", "provisions_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=Seller::class)
-     * @Groups({"suppliers_read", "provisions_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
      */
     private $seller;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
      * @Assert\Email(message="L'adresse email saisie n'est pas valide.")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
      * @Assert\Regex(
      *     pattern="/^(?:(?:\+|00)262|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/",
      *     match=true,
@@ -66,15 +66,21 @@ class Supplier
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"suppliers_read", "provisions_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
      */
     private $accountingId;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"suppliers_read", "provisions_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
      */
     private $accountingCompanyId;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     */
+    private $isIntern;
 
     public function getId(): ?int
     {
@@ -149,6 +155,18 @@ class Supplier
     public function setAccountingCompanyId(?int $accountingCompanyId): self
     {
         $this->accountingCompanyId = $accountingCompanyId;
+
+        return $this;
+    }
+
+    public function getIsIntern(): ?bool
+    {
+        return $this->isIntern;
+    }
+
+    public function setIsIntern(?bool $isIntern): self
+    {
+        $this->isIntern = $isIntern;
 
         return $this;
     }

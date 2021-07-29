@@ -33,19 +33,19 @@ class UpdateSubscriber implements EventSubscriberInterface
 
     public function updateEntity(ViewEvent $event)
     {
-        $result = $event->getControllerResult();
-        $method = $event->getRequest()->getMethod();
+        // $result = $event->getControllerResult();
+        // $method = $event->getRequest()->getMethod();
 
-        if ($result instanceof Supplier) {
-            if ($method === "POST") {
-                $ids = $this->axonaut->createSupplier($result);
-                $result->setAccountingId($ids['supplier_id'])
-                       ->setAccountingCompanyId($ids['company_id']);
-            }
-            else if ($method === "PUT" || $method === "PATCH") {
-                $accountingId = $this->axonaut->updateSupplier($result);
-                $result->setAccountingCompanyId($accountingId);
-            }
-        }
+        // if ($result instanceof Supplier) {
+        //     if ($method === "POST") {
+        //         $ids = $this->axonaut->createSupplier($result);
+        //         $result->setAccountingId($ids['supplier_id'])
+        //                ->setAccountingCompanyId($ids['company_id']);
+        //     }
+        //     else if ($method === "PUT" || $method === "PATCH") {
+        //         $accountingId = $this->axonaut->updateSupplier($result);
+        //         $result->setAccountingCompanyId($accountingId);
+        //     }
+        // }
     }
 }

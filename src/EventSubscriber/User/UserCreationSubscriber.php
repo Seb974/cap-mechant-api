@@ -58,17 +58,18 @@ class UserCreationSubscriber implements EventSubscriberInterface
                     $this->em->persist($meta);
                     $result->setMetas($meta);
                 }
-                if (is_null($result->getAccountingId())) {
-                    $accountingId = $this->axonaut->createUser($result);
-                    $result->setAccountingId($accountingId);
-                }
-                if (is_null($result->getBillingDetails())) {
-                    $result->setBillingDetails(true);
-                }
-            } else {
-                $accountingId = $this->axonaut->updateUser($result);
-                $result->setAccountingId($accountingId);
-            }
+                // if (is_null($result->getAccountingId())) {
+                //     $accountingId = $this->axonaut->createUser($result);
+                //     $result->setAccountingId($accountingId);
+                // }
+                // if (is_null($result->getBillingDetails())) {
+                //     $result->setBillingDetails(true);
+                // }
+            } 
+            // else {
+            //     $accountingId = $this->axonaut->updateUser($result);
+            //     $result->setAccountingId($accountingId);
+            // }
         }
     }
 }

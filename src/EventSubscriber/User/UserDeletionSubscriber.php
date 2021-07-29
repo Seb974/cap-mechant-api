@@ -25,11 +25,11 @@ class UserDeletionSubscriber implements EventSubscriberInterface
 
     public function removeUserFromCustomers(RequestEvent $event)
     {
-        $method = $event->getRequest()->getMethod();
-        $previous = $event->getRequest()->attributes->get('previous_data');
+        // $method = $event->getRequest()->getMethod();
+        // $previous = $event->getRequest()->attributes->get('previous_data');
 
-        if ($previous instanceof User && $method === "DELETE") {
-            $this->axonaut->removeFromCustomers($previous);
-        }
+        // if ($previous instanceof User && $method === "DELETE") {
+        //     $this->axonaut->removeFromCustomers($previous);
+        // }
     }
 }

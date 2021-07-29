@@ -193,12 +193,6 @@ class Product
     private $catalogs;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Seller::class)
-     * @Groups({"products_read", "product_write", "orders_read"})
-     */
-    private $seller;
-
-    /**
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"seller:products_read", "product_write", "provisions_read", "goods_read"})
      */
@@ -234,6 +228,18 @@ class Product
      */
     private $accountingId;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Seller::class)
+     * @Groups({"products_read", "product_write", "orders_read"})
+     */
+    private $seller;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Supplier::class)
+     * @Groups({"products_read", "product_write", "orders_read"})
+     */
+    private $supplier;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -242,6 +248,7 @@ class Product
         $this->prices = new ArrayCollection();
         $this->userGroups = new ArrayCollection();
         $this->catalogs = new ArrayCollection();
+        $this->sellers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -627,18 +634,6 @@ class Product
         return $this;
     }
 
-    public function getSeller(): ?Seller
-    {
-        return $this->seller;
-    }
-
-    public function setSeller(?Seller $seller): self
-    {
-        $this->seller = $seller;
-
-        return $this;
-    }
-
     public function getIsFabricated(): ?bool
     {
         return $this->isFabricated;
@@ -707,6 +702,30 @@ class Product
     public function setAccountingId(?int $accountingId): self
     {
         $this->accountingId = $accountingId;
+
+        return $this;
+    }
+
+    public function getSeller(): ?Seller
+    {
+        return $this->seller;
+    }
+
+    public function setSeller(?Seller $seller): self
+    {
+        $this->seller = $seller;
+
+        return $this;
+    }
+
+    public function getSupplier(): ?Supplier
+    {
+        return $this->supplier;
+    }
+
+    public function setSupplier(?Supplier $supplier): self
+    {
+        $this->supplier = $supplier;
 
         return $this;
     }
