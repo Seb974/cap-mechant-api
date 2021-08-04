@@ -248,7 +248,6 @@ class Product
         $this->prices = new ArrayCollection();
         $this->userGroups = new ArrayCollection();
         $this->catalogs = new ArrayCollection();
-        $this->sellers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -472,6 +471,13 @@ class Product
         return $this;
     }
 
+    public function setCategories(Collection $categories)
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
+
     public function getStock(): ?Stock
     {
         return $this->stock;
@@ -610,6 +616,13 @@ class Product
         return $this;
     }
 
+    public function setUserGroups(Collection $userGroups)
+    {
+        $this->userGroups = $userGroups;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Catalog[]
      */
@@ -630,6 +643,13 @@ class Product
     public function removeCatalog(Catalog $catalog): self
     {
         $this->catalogs->removeElement($catalog);
+
+        return $this;
+    }
+
+    public function setCatalogs(Collection $catalogs)
+    {
+        $this->catalogs = $catalogs;
 
         return $this;
     }

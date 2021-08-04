@@ -174,3 +174,8 @@ services:
         arguments:
             $key: '%env(AXONAUT_API_KEY)%'
             $domain: '%env(AXONAUT_DOMAIN)%'
+    
+    App\Service\Product\DataIntegrator:
+        arguments:
+            $vifFolder: '%kernel.project_dir%/public/VIF/'
+            $productFilename: '%env(VIF_PRODUCTS_FILENAME)%'

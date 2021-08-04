@@ -63,6 +63,12 @@ class Category
      */
     private $restrictions;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"categories_read", "products_read", "category_write"})
+     */
+    private $code;
+
     public function __construct()
     {
         $this->userGroups = new ArrayCollection();
@@ -161,6 +167,18 @@ class Category
                 $restriction->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

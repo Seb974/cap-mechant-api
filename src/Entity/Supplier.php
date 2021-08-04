@@ -82,6 +82,12 @@ class Supplier
      */
     private $isIntern;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     */
+    private $vifCode;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -167,6 +173,18 @@ class Supplier
     public function setIsIntern(?bool $isIntern): self
     {
         $this->isIntern = $isIntern;
+
+        return $this;
+    }
+
+    public function getVifCode(): ?string
+    {
+        return $this->vifCode;
+    }
+
+    public function setVifCode(?string $vifCode): self
+    {
+        $this->vifCode = $vifCode;
 
         return $this;
     }
