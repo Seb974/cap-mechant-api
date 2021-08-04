@@ -121,6 +121,12 @@ class User implements UserInterface
      */
     private $billingDetails;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
+     */
+    private $vifCode;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -292,6 +298,18 @@ class User implements UserInterface
     public function setBillingDetails(?bool $billingDetails): self
     {
         $this->billingDetails = $billingDetails;
+
+        return $this;
+    }
+
+    public function getVifCode(): ?string
+    {
+        return $this->vifCode;
+    }
+
+    public function setVifCode(?string $vifCode): self
+    {
+        $this->vifCode = $vifCode;
 
         return $this;
     }

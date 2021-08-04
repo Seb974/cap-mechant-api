@@ -179,3 +179,13 @@ services:
         arguments:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $productFilename: '%env(VIF_PRODUCTS_FILENAME)%'
+
+    App\Service\User\DataIntegrator:
+        arguments:
+            $vifFolder: '%kernel.project_dir%/public/VIF/'
+            $userFilename: '%env(VIF_USERS_FILENAME)%'
+
+    App\Service\Supplier\DataIntegrator:
+        arguments:
+            $vifFolder: '%kernel.project_dir%/public/VIF/'
+            $supplierFilename: '%env(VIF_SUPPLIERS_FILENAME)%'

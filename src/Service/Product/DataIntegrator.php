@@ -150,15 +150,11 @@ class DataIntegrator
         $site = trim($row[$header['SITE PRODUCTION']]);
 
         if ($type == 'ACH')
-            $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['isIntern' => false]);
+            return $this->em->getRepository(Supplier::class)->findOneBy(['isIntern' => false]);
         else if (strlen($site) > 0)
-            $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $site]);
+            return $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $site]);
         else 
-            $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['isIntern' => true]);
-
-        dump('Type : ' . $type . ' & Site : ' . $site);
-        dump(trim($row[$header['LIBELLE']]) . ' supplier : ' . $supplier->getName());
-        return $supplier;
+            return $this->em->getRepository(Supplier::class)->findOneBy(['isIntern' => true]);
     }
 
     private function getSeller()
