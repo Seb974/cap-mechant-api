@@ -97,7 +97,6 @@ class DataIntegrator
                 ->setContentWeight(0)
                 ->setUserGroups($userGroups)
                 ->setCatalogs($catalogs);
-        // $this->em->persist($product);
         return $product;
     }
 

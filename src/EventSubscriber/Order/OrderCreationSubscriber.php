@@ -14,6 +14,7 @@ use App\Service\Promotion\PromotionUseCounter;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Service\Chronopost\Chronopost;
+use App\Service\Order\DataSender;
 use App\Service\Seller\SellerAccount;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -21,6 +22,7 @@ class OrderCreationSubscriber implements EventSubscriberInterface
 {
     private $security;
     private $chronopost;
+    private $dataSender;
     private $constructor;
     private $userGroupDefiner;
     private $adminDomain;
@@ -31,12 +33,13 @@ class OrderCreationSubscriber implements EventSubscriberInterface
     private $productSalesCounter;
     private $promotionUseCounter;
 
-    public function __construct($admin, $public, Constructor $constructor, Security $security, UserGroupDefiner $userGroupDefiner, UserOrderCounter $userOrderCounter, ProductSalesCounter $productSalesCounter, StockManager $stockManager, PromotionUseCounter $promotionUseCounter, SellerAccount $sellerAccount, Chronopost $chronopost)
+    public function __construct($admin, $public, Constructor $constructor, Security $security, UserGroupDefiner $userGroupDefiner, UserOrderCounter $userOrderCounter, ProductSalesCounter $productSalesCounter, StockManager $stockManager, PromotionUseCounter $promotionUseCounter, SellerAccount $sellerAccount, Chronopost $chronopost, DataSender $dataSender)
     {
         $this->adminDomain = $admin;
         $this->security = $security;
         $this->publicDomain = $public;
         $this->chronopost = $chronopost;
+        $this->dataSender = $dataSender;
         $this->constructor = $constructor;
         $this->stockManager = $stockManager;
         $this->sellerAccount = $sellerAccount;
