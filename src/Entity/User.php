@@ -86,7 +86,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToOne(targetEntity=Meta::class, inversedBy="user", cascade={"persist", "remove"})
-     * @Groups({"users_read", "user_write", "supervisors_read"})
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
      */
     private $metas;
 

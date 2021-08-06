@@ -88,6 +88,12 @@ class Provision
      */
     private $sendingMode;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Meta::class)
+     * @Groups({"provisions_read", "provision_write"})
+     */
+    private $metas;
+
     public function __construct()
     {
         $this->goods = new ArrayCollection();
@@ -196,6 +202,18 @@ class Provision
     public function setSendingMode(?string $sendingMode): self
     {
         $this->sendingMode = $sendingMode;
+
+        return $this;
+    }
+
+    public function getMetas(): ?Meta
+    {
+        return $this->metas;
+    }
+
+    public function setMetas(?Meta $metas): self
+    {
+        $this->metas = $metas;
 
         return $this;
     }

@@ -15,13 +15,12 @@
             </p>
             <br/>
             <p>
-                Voici ci-dessous notre commande, pour une livraison le {{ provision.provisionDate|date("d/m/Y") }} :
-                {# à notre adresse : #}
+                Voici ci-dessous notre commande, pour une livraison le {{ provision.provisionDate|date("d/m/Y") }} à l'adresse suivante :
                 <br/><br/>
-                {# <i>{{ provision.user.metas.address }}</i><br/>
-                <i>{{ provision.user.metas.address2 }}</i><br/>
-                <i>{{ provision.user.metas.zipcode }} - {{ provision.user.metas.city }}</i><br/>
-                <br/> #}
+                <i>{{ provision.metas.address }}</i><br/>
+                <i>{{ provision.metas.address2 }}</i><br/>
+                <i>{{ provision.metas.zipcode }} - {{ provision.metas.city }}</i><br/>
+                <br/>
             </p>
             <table class="table">
                 <thead>
