@@ -82,6 +82,12 @@ class Provision
      */
     private $integrated;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"provisions_read", "provision_write"})
+     */
+    private $sendingMode;
+
     public function __construct()
     {
         $this->goods = new ArrayCollection();
@@ -178,6 +184,18 @@ class Provision
     public function setIntegrated(?bool $integrated): self
     {
         $this->integrated = $integrated;
+
+        return $this;
+    }
+
+    public function getSendingMode(): ?string
+    {
+        return $this->sendingMode;
+    }
+
+    public function setSendingMode(?string $sendingMode): self
+    {
+        $this->sendingMode = $sendingMode;
 
         return $this;
     }
