@@ -2,25 +2,31 @@
 
 namespace App\Command;
 
-use App\Service\Product\DataIntegrator as ProductDataIntegrator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use App\Service\User\DataIntegrator as UserDataIntegrator;
+use App\Service\Product\DataIntegrator as ProductDataIntegrator;
+use App\Service\Supplier\DataIntegrator as SupplierDataIntegrator;
 
 class GetDataCommand extends Command
 {
+    protected $userIntegrator;
     protected $productIntegrator;
+    protected $supplierIntegrator;
     protected static $defaultName = 'app:get-data';
     protected static $defaultDescription = 'Get refreshed datas from VIF';
 
 
-    public function __construct(ProductDataIntegrator $productIntegrator)
+    public function __construct(ProductDataIntegrator $productIntegrator, UserDataIntegrator $userIntegrator, SupplierDataIntegrator $supplierIntegrator)
     {
         parent::__construct();
+        $this->userIntegrator = $userIntegrator;
         $this->productIntegrator = $productIntegrator;
+        $this->supplierIntegrator = $supplierIntegrator;
     }
 
     protected function configure(): void
@@ -39,8 +45,9 @@ class GetDataCommand extends Command
         $entity = $input->getArgument('entity');
 
         // if (!$entity) {
-            $status = $this->productIntegrator->editProducts();
-            // $status = $this->csvService->getProductsFromCsv();
+            // $status = $this->productIntegrator->editProducts();
+            // $status = $this->userIntegrator->editUsers();
+            $status = $this->supplierIntegrator->editSuppliers();
         // } 
         // else {
         //     $status = strtoupper($entity) == 'USER' ? $this->csvService->getUsersFromCsv() : $this->csvService->getProductsFromCsv();

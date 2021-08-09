@@ -90,7 +90,7 @@ class Constructor
         $this->updateFulfilledItems($order, $isPaidOnline);
 
         if ( in_array($order->getStatus(), ["WAITING", "PRE-PREPARED"]) && $this->needsStatusUpdate($order) ) {
-            $status = $this->getAdaptedStatus($order);
+            $status = "DELIVERED";      // $this->getAdaptedStatus($order);
             $order->setStatus($status);
             if ( $status == 'PREPARED' && !$order->getIsRemains() && $userGroup->getSoldOutNotification()) 
                 $this->orderNotifier->notifySoldOut($order);

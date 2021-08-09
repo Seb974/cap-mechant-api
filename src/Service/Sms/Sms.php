@@ -7,12 +7,14 @@ class Sms
     private $url;
     private $user;
     private $pass;
+    private $expeditor;
 
-    public function __construct($url, $user, $pass)
+    public function __construct($url, $user, $pass, $expeditor)
     {
         $this->url = $url;
         $this->user = $user;
         $this->pass = $pass;
+        $this->expeditor = $expeditor;
     }
 
     public function sendTo($clientPhone, $message)
@@ -20,6 +22,7 @@ class Sms
         $data = [
             'user'  => $this->user,
             'pass'  => $this->pass,
+            'from'  => $this->expeditor,
             'cmd'   => 'sendsms',
             'to'    => $clientPhone,
             'txt'   => $message,

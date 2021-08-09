@@ -127,11 +127,16 @@ services:
         arguments: [ '@App\Serializer\ItemContextBuilder.inner' ]
         autoconfigure: false
 
+    App\Service\Email\Mailer:
+        arguments: 
+            $sender: '%env(EMAIL_SENDER)%'
+
     App\Service\Sms\Sms:
         arguments:
             $url: '%env(SMS_URL)%'
             $user: '%env(SMS_USER)%'
             $pass: '%env(SMS_PASS)%'
+            $expeditor: '%env(SMS_EXPEDITOR)%'
 
     App\Service\Chronopost\Shipping:
         arguments:
@@ -179,3 +184,18 @@ services:
         arguments:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $productFilename: '%env(VIF_PRODUCTS_FILENAME)%'
+
+    App\Service\User\DataIntegrator:
+        arguments:
+            $vifFolder: '%kernel.project_dir%/public/VIF/'
+            $userFilename: '%env(VIF_USERS_FILENAME)%'
+
+    App\Service\Supplier\DataIntegrator:
+        arguments:
+            $vifFolder: '%kernel.project_dir%/public/VIF/'
+            $supplierFilename: '%env(VIF_SUPPLIERS_FILENAME)%'
+
+    App\Service\Order\DataSender:
+        arguments:
+            $vifFolder: '%kernel.project_dir%/public/VIF/'
+            $ordersFilename: '%env(VIF_ORDERS_FILENAME)%'

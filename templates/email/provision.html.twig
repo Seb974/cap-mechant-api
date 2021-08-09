@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CAP MÉCHANT : Commande pour le {{ provision.provisionDate|date("d/m/Y") }}</title>
+		 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+            	  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+	<body>
+        <div class="container">
+            <p>
+                Bonjour {{ provision.supplier.name }},
+            </p>
+            <br/>
+            <p>
+                Voici ci-dessous notre commande, pour une livraison le {{ provision.provisionDate|date("d/m/Y") }} à l'adresse suivante :
+                <br/><br/>
+                <i>{{ provision.metas.address }}</i><br/>
+                <i>{{ provision.metas.address2 }}</i><br/>
+                <i>{{ provision.metas.zipcode }} - {{ provision.metas.city }}</i><br/>
+                <br/>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for good in provision.goods %}
+                        <tr>
+                            <td>{{ good.product.name }}</td>
+                            <td>{{ good.quantity }} {{ good.unit }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3">Aucune donnée trouvée</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br/>
+            <p>En vous remerciant par avance {{ provision.supplier.name }}.</p>
+            <br/>
+        </div>
+        <div class="container">
+            <p>{{ " " }}</p>
+        </div>
+        <div class="container">
+            <div class="row justify-content-end" style="margin-top: -25px; font-size: 0.9em;">
+                <div class="col align-self-end">
+                    <div>
+                        <strong>CAP MECHANT</strong><br/>
+                        119 allée de Montaignac<br/>
+                        97427- Etang-Salé les Hauts<br/>
+                        02 62 34 58 58
+                    </div>
+                </div>
+            </div>
+        </div>
+	</body>
+</html>

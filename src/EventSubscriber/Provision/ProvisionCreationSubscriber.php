@@ -3,25 +3,25 @@
 namespace App\EventSubscriber\Provision;
 
 use App\Entity\Provision;
-use App\Service\Axonaut\Expense;
 use App\Service\Stock\StockManager;
-use App\Service\Sms\ProvisionNotifier;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Service\Sms\ProvisionNotifier as SMSNotifier;
+use App\Service\Email\ProvisionNotifier as EmailNotifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProvisionCreationSubscriber implements EventSubscriberInterface 
 {
-    private $axonaut;
     private $stockManager;
-    private $provisionNotifier;
+    private $smsNotifier;
+    private $emailNotifier;
 
-    public function __construct(ProvisionNotifier $provisionNotifier, StockManager $stockManager, Expense $axonaut)
+    public function __construct(SMSNotifier $smsNotifier, EmailNotifier $emailNotifier, StockManager $stockManager)
     {
-        $this->axonaut = $axonaut;
         $this->stockManager = $stockManager;
-        $this->provisionNotifier = $provisionNotifier;
+        $this->smsNotifier = $smsNotifier;
+        $this->emailNotifier = $emailNotifier;
     }
 
     public static function getSubscribedEvents()
@@ -31,26 +31,25 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
 
     public function fitOrder(ViewEvent $event)
     {
-        // $result = $event->getControllerResult();
-        // $request = $event->getRequest();
-        // $method = $request->getMethod();
+        $result = $event->getControllerResult();
+        $request = $event->getRequest();
+        $method = $request->getMethod();
 
-        // if ( $result instanceof Provision ) {
-        //     if ( $method === "POST" ) {
-        //         $status = !is_null($result->getStatus()) ? $result->getStatus() : "ORDERED";
-        //         if ($status === "ORDERED")
-        //             $this->provisionNotifier->notifyOrder($result);
-
-        //         $result->setStatus($status)
-        //                ->setIntegrated(false);
-        //     }
-        //     else if ( $method === "PUT" && $result->getStatus() === "ORDERED" && !$result->getIntegrated() ) {
-        //         $this->integrateProvision($result);
-        //         $this->axonaut->createExpense($result);
-        //         $result->setStatus("RECEIVED")
-        //                ->setIntegrated(true);
-        //     }
-        // }
+        if ( $result instanceof Provision ) {
+            if ( $method === "POST" ) {
+                $status = !is_null($result->getStatus()) ? $result->getStatus() : "ORDERED";
+                if ($status === "ORDERED") {
+                    if (str_contains(strtoupper($result->getSendingMode()), "SMS"))
+                        $this->smsNotifier->notifyOrder($result);
+                    if (str_contains(strtoupper($result->getSendingMode()), "EMAIL"))
+                        $this->emailNotifier->notify($result);
+                }
+                $result->setStatus($status);
+            }
+            else if ( $method === "PUT" && $result->getStatus() === "ORDERED" && !$result->getIntegrated() ) {
+                $result->setStatus("RECEIVED");
+            }
+        }
     }
 
     private function integrateProvision($provision)

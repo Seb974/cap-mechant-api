@@ -30,7 +30,7 @@ class Supplier
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write"})
      */
     private $id;
 
@@ -48,16 +48,16 @@ class Supplier
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write"})
      * @Assert\Email(message="L'adresse email saisie n'est pas valide.")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write"})
      * @Assert\Regex(
-     *     pattern="/^(?:(?:\+|00)262|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/",
+     *     pattern="/^(?:(?:\+|00)33|(?:\+|00)262|0)[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/g;",
      *     match=true,
      *     message="Le numéro de téléphone saisi n'est pas valide."
      * )
