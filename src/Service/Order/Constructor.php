@@ -39,11 +39,9 @@ class Constructor
     public function adjustOrder(&$order)
     {
         $catalog = $order->getCatalog();
-        if ($catalog === null){// || !$catalog->getNeedsParcel() && $order->getAppliedCondition() === null) {
+        if ($catalog === null) {
             throw new \Exception();
         }
-        // $user = $this->security->getUser();
-        // dump($user);
         $userGroup = $this->userGroupDefiner->getShopGroup(null);
         $status =  "WAITING";
         $items = $this->updateItems($order->getItems(), $catalog, $userGroup);
@@ -90,7 +88,7 @@ class Constructor
         $this->updateFulfilledItems($order, $isPaidOnline);
 
         if ( in_array($order->getStatus(), ["WAITING", "PRE-PREPARED"]) && $this->needsStatusUpdate($order) ) {
-            $status = "DELIVERED";      // $this->getAdaptedStatus($order);
+            $status = "DELIVERED";
             $order->setStatus($status);
             if ( $status == 'PREPARED' && !$order->getIsRemains() && $userGroup->getSoldOutNotification()) 
                 $this->orderNotifier->notifySoldOut($order);
