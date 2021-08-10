@@ -39,19 +39,19 @@ class Constructor
     public function adjustOrder(&$order)
     {
         $catalog = $order->getCatalog();
-        if ($catalog === null || !$catalog->getNeedsParcel() && $order->getAppliedCondition() === null) {
+        if ($catalog === null){// || !$catalog->getNeedsParcel() && $order->getAppliedCondition() === null) {
             throw new \Exception();
         }
-        $user = $this->security->getUser();
-        $userGroup = $this->userGroupDefiner->getShopGroup($user);
-        $status = $userGroup->getOnlinePayment() ? "ON_PAYMENT" : "WAITING";
+        // $user = $this->security->getUser();
+        // dump($user);
+        $userGroup = $this->userGroupDefiner->getShopGroup(null);
+        $status =  "WAITING";
         $items = $this->updateItems($order->getItems(), $catalog, $userGroup);
         $totalHT = $this->getItemsCostHT($items, 'ORDERED');
         $totalTTC = $this->getItemsCostTTC($items, 'ORDERED');
         $deliveryCostHT = $this->getDeliveryCostHT($order->getAppliedCondition(), $totalHT);
         $deliveryCostTTC = $this->getDeliveryCostTTC($order->getAppliedCondition(), $catalog, $deliveryCostHT);
-        $order->setUser($user)
-              ->setIsRemains(false)
+        $order->setIsRemains(false)
               ->setRegulated(false)
               ->setInvoiced(false)
               ->setStatus($status)
@@ -198,7 +198,7 @@ class Constructor
     private function updateItem(&$item, $catalog, $userGroup)
     {
         $product = $item->getProduct();
-        $price = $this->getProductPrice($product, $userGroup);
+        $price = 0;
         $tax = $this->tax->getTaxRate($product, $catalog);
         $item->setPrice($price)
              ->setTaxRate($tax)
