@@ -34,32 +34,32 @@ class Meta
     /**
      * server domain, used to configure the Mercure hub topics
      */
-    private static $domain = 'http://localhost:8000';
+    private static $domain = 'https://api.cap-mechant.re';
 
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
      * @Assert\NotBlank(message="Une adresse est obligatoire.")
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
      */
     private $address2;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
      * @Assert\Regex(
      *     pattern="/^(?:[0-9]\d|9[0-8])\d{3}$/",
      *     match=true,
@@ -70,19 +70,19 @@ class Meta
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="array", nullable=true)
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
      */
     private $position = [];
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
-     *  @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read"})
+     *  @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
      * @Assert\Regex(
      *     pattern="/^(?:(?:\+|00)262|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/",
      *     match=true,
@@ -100,7 +100,7 @@ class Meta
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "admin:orders_read"})
      */
     private $isRelaypoint;
 

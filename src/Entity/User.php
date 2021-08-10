@@ -86,7 +86,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToOne(targetEntity=Meta::class, inversedBy="user", cascade={"persist", "remove"})
-     * @Groups({"users_read", "user_write", "supervisors_read"})
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
      */
     private $metas;
 
@@ -120,6 +120,12 @@ class User implements UserInterface
      * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
      */
     private $billingDetails;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
+     */
+    private $vifCode;
 
     public function getId(): ?int
     {
@@ -292,6 +298,18 @@ class User implements UserInterface
     public function setBillingDetails(?bool $billingDetails): self
     {
         $this->billingDetails = $billingDetails;
+
+        return $this;
+    }
+
+    public function getVifCode(): ?string
+    {
+        return $this->vifCode;
+    }
+
+    public function setVifCode(?string $vifCode): self
+    {
+        $this->vifCode = $vifCode;
 
         return $this;
     }

@@ -39,12 +39,19 @@ class ProvisionNotifier
     {
         $supplierName = $provision->getSupplier()->getName();
         $provisionDate = date_format($provision->getProvisionDate(), 'd/m/Y');
-        return "Bonjour " . $supplierName . ",\nVoici ci-dessous notre commande pour le ". $provisionDate ." :\n";
+        return "Bonjour " . $supplierName . ",\nVoici ci-dessous notre commande pour le ". $provisionDate ." à livrer au " . $this->getAddress($provision) . " :\n";
     }
 
     private function getProductName($good) {
         $variationName = is_null($good->getVariation()) ? "" : " - " . $good->getVariation()->getColor();
         $sizeName = is_null($good->getSize()) ? "" : " " . $good->getSize()->getName();
         return $good->getProduct()->getName() . $variationName . $sizeName;
+    }
+
+    private function getAddress($provision)
+    {
+        $metas = $provision->getMetas();
+        return  $metas->getAddress() . (strlen($metas->getAddress2()) > 0 ? ' ' . $metas->getAddress2() : '') . ' ' .
+                $metas->getZipcode() . ' - ' . $metas->getCity();
     }
 }

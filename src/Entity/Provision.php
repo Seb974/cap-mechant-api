@@ -82,6 +82,18 @@ class Provision
      */
     private $integrated;
 
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     * @Groups({"provisions_read", "provision_write"})
+     */
+    private $sendingMode;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Meta::class)
+     * @Groups({"provisions_read", "provision_write"})
+     */
+    private $metas;
+
     public function __construct()
     {
         $this->goods = new ArrayCollection();
@@ -178,6 +190,30 @@ class Provision
     public function setIntegrated(?bool $integrated): self
     {
         $this->integrated = $integrated;
+
+        return $this;
+    }
+
+    public function getSendingMode(): ?string
+    {
+        return $this->sendingMode;
+    }
+
+    public function setSendingMode(?string $sendingMode): self
+    {
+        $this->sendingMode = $sendingMode;
+
+        return $this;
+    }
+
+    public function getMetas(): ?Meta
+    {
+        return $this->metas;
+    }
+
+    public function setMetas(?Meta $metas): self
+    {
+        $this->metas = $metas;
 
         return $this;
     }
