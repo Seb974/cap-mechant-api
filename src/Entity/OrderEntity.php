@@ -44,7 +44,7 @@ class OrderEntity
     /**
      * server domain, used to configure the Mercure hub topics
      */
-    private static $domain = 'https://api.cap-mechant.re';
+    private static $domain = 'http://localhost:8000';
 
     /**
      * @ORM\Id
@@ -60,11 +60,11 @@ class OrderEntity
      */
     private $name;
 
-    /**
+    /*
      * @ORM\Column(type="string", length=120, nullable=true)
      * @Groups({"orders_read", "order_write", "tourings_read"})
      */
-    private $email;
+    // private $email;
 
     /**
      * @ORM\ManyToOne(targetEntity=Meta::class, cascade={"persist"})
@@ -192,6 +192,11 @@ class OrderEntity
      */
     private $invoiced;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $emails = [];
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -227,17 +232,17 @@ class OrderEntity
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+    // public function getEmail(): ?string
+    // {
+    //     return $this->email;
+    // }
 
-    public function setEmail(?string $email): self
-    {
-        $this->email = $email;
+    // public function setEmail(?string $email): self
+    // {
+    //     $this->email = $email;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getMetas(): ?Meta
     {
@@ -523,6 +528,18 @@ class OrderEntity
     public function setInvoiced(?bool $invoiced): self
     {
         $this->invoiced = $invoiced;
+
+        return $this;
+    }
+
+    public function getEmails(): ?array
+    {
+        return $this->emails;
+    }
+
+    public function setEmails(?array $emails): self
+    {
+        $this->emails = $emails;
 
         return $this;
     }

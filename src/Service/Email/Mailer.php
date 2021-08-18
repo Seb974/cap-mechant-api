@@ -15,7 +15,7 @@ class Mailer
         $this->templating   = $templating;
     }
 
-    public function sendMessage(string $sendTo, string $subject, string $template, array $args)
+    public function sendMessage($sendTo, string $subject, string $template, array $args)
     {
         try {
             $status = '';
