@@ -57,7 +57,7 @@ class Supplier
      * @ORM\Column(type="string", length=15, nullable=true)
      * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write"})
      * @Assert\Regex(
-     *     pattern="/^(?:(?:\+|00)33|(?:\+|00)262|0)[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/g;",
+     *     pattern="/^(?:(?:\+|00)33|(?:\+|00)262|0)[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/",
      *     match=true,
      *     message="Le numéro de téléphone saisi n'est pas valide."
      * )
