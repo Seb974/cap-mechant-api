@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\SupplierRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -30,13 +32,13 @@ class Supplier
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read"})
      */
     private $name;
 
@@ -46,16 +48,16 @@ class Supplier
      */
     private $seller;
 
-    /**
+    /*
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read"})
      * @Assert\Email(message="L'adresse email saisie n'est pas valide.")
      */
-    private $email;
+    // private $email;
 
     /**
      * @ORM\Column(type="string", length=15, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read"})
      * @Assert\Regex(
      *     pattern="/^(?:(?:\+|00)33|(?:\+|00)262|0)[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/",
      *     match=true,
@@ -78,15 +80,32 @@ class Supplier
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read"})
      */
     private $isIntern;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read"})
      */
     private $vifCode;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="suppliers")
+     * @Groups({"suppliers_read"})
+     */
+    private $products;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read"})
+     */
+    private $emails = [];
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -117,17 +136,17 @@ class Supplier
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+    // public function getEmail(): ?string
+    // {
+    //     return $this->email;
+    // }
 
-    public function setEmail(?string $email): self
-    {
-        $this->email = $email;
+    // public function setEmail(?string $email): self
+    // {
+    //     $this->email = $email;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getPhone(): ?string
     {
@@ -185,6 +204,45 @@ class Supplier
     public function setVifCode(?string $vifCode): self
     {
         $this->vifCode = $vifCode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): self
+    {
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->addSupplier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->removeElement($product)) {
+            $product->removeSupplier($this);
+        }
+
+        return $this;
+    }
+
+    public function getEmails(): ?array
+    {
+        return $this->emails;
+    }
+
+    public function setEmails(?array $emails): self
+    {
+        $this->emails = $emails;
 
         return $this;
     }

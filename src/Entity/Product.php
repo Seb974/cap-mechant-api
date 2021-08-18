@@ -235,10 +235,16 @@ class Product
     private $seller;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Supplier::class, inversedBy="products")
+     * @Groups({"products_read", "product_write", "orders_read"})
+     */
+    private $suppliers;
+
+    /*
      * @ORM\ManyToOne(targetEntity=Supplier::class)
      * @Groups({"products_read", "product_write", "orders_read"})
      */
-    private $supplier;
+    // private $supplier;
 
     public function __construct()
     {
@@ -248,6 +254,7 @@ class Product
         $this->prices = new ArrayCollection();
         $this->userGroups = new ArrayCollection();
         $this->catalogs = new ArrayCollection();
+        $this->suppliers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -738,14 +745,38 @@ class Product
         return $this;
     }
 
-    public function getSupplier(): ?Supplier
+    // public function getSupplier(): ?Supplier
+    // {
+    //     return $this->supplier;
+    // }
+
+    // public function setSupplier(?Supplier $supplier): self
+    // {
+    //     $this->supplier = $supplier;
+
+    //     return $this;
+    // }
+
+    /**
+     * @return Collection|Supplier[]
+     */
+    public function getSuppliers(): Collection
     {
-        return $this->supplier;
+        return $this->suppliers;
     }
 
-    public function setSupplier(?Supplier $supplier): self
+    public function addSupplier(Supplier $supplier): self
     {
-        $this->supplier = $supplier;
+        if (!$this->suppliers->contains($supplier)) {
+            $this->suppliers[] = $supplier;
+        }
+
+        return $this;
+    }
+
+    public function removeSupplier(Supplier $supplier): self
+    {
+        $this->suppliers->removeElement($supplier);
 
         return $this;
     }

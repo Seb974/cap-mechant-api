@@ -62,7 +62,7 @@ class DataIntegrator
                  ->setIsIntern(false);
 
         $this->setPhoneIfExists($supplier, $row, $header);
-        $this->setEmailIfExists($supplier, $row, $header);
+        $this->setEmailsIfExists($supplier, $row, $header);
 
         return $supplier;
     }
@@ -72,7 +72,7 @@ class DataIntegrator
         $supplier->setName(trim($row[$header['LIBELLE']]));
 
         $this->setPhoneIfExists($supplier, $row, $header);
-        $this->setEmailIfExists($supplier, $row, $header);
+        $this->setEmailsIfExists($supplier, $row, $header);
 
         return $supplier;
     }
@@ -97,10 +97,22 @@ class DataIntegrator
             $supplier->setPhone($selectedTel);
     }
 
-    private function setEmailIfExists(Supplier &$supplier, $row, $header)
+    // private function setEmailIfExists(Supplier &$supplier, $row, $header)
+    // {
+    //     if ($this->isDefined('EMAIL', $row, $header)) 
+    //         $supplier->setEmail(trim($row[$header['EMAIL']]));
+    // }
+
+    private function setEmailsIfExists(Supplier &$supplier, $row, $header)
     {
-        if ($this->isDefined('EMAIL', $row, $header)) 
-            $supplier->setEmail(trim($row[$header['EMAIL']]));
+        $emailList = $supplier->getEmails();
+        foreach ($header as $key => $value) {
+            if (str_contains(strtoupper($key), 'EMAIL') && !in_array($row[intVal($value)], $emailList)) {
+                $emailList[] = trim($row[intVal($value)]);
+            }
+        }
+        dump($emailList);
+        $supplier->setEmails($emailList);
     }
 
     private function isDefined($key, $row, $header)
