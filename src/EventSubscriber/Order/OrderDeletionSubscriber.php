@@ -7,9 +7,9 @@ use App\Service\Chronopost\Chronopost;
 use Symfony\Component\HttpKernel\KernelEvents;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+// use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class OrderDeletionSubscriber implements EventSubscriberInterface
+class OrderDeletionSubscriber // implements EventSubscriberInterface
 {
     private $chronopost;
 
@@ -25,13 +25,13 @@ class OrderDeletionSubscriber implements EventSubscriberInterface
 
     public function deleteSkybillsIfExist(RequestEvent $event)
     {
-        $method = $event->getRequest()->getMethod();
-        $previous = $event->getRequest()->attributes->get('previous_data');
+        // $method = $event->getRequest()->getMethod();
+        // $previous = $event->getRequest()->attributes->get('previous_data');
 
-        if ($previous instanceof OrderEntity && !is_null($previous->getReservationNumber()) && $method === "DELETE") {
-            dump('In delete condition in KernelRequest event');
-            $this->chronopost->cancelSkybill($previous);
-            dump("deletion ended and cancel skybill opered");
-        }
+        // if ($previous instanceof OrderEntity && !is_null($previous->getReservationNumber()) && $method === "DELETE") {
+        //     dump('In delete condition in KernelRequest event');
+        //     $this->chronopost->cancelSkybill($previous);
+        //     dump("deletion ended and cancel skybill opered");
+        // }
     }
 }

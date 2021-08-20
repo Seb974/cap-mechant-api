@@ -184,16 +184,19 @@ services:
         arguments:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $productFilename: '%env(VIF_PRODUCTS_FILENAME)%'
+            $supplierOwnerFilename: '%env(VIF_PRODUCTS_SUPPLIERS_FILENAME)%'
 
     App\Service\User\DataIntegrator:
         arguments:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $userFilename: '%env(VIF_USERS_FILENAME)%'
+            $userProductsFilename: '%env(VIF_USERS_PRODUCTS_FILENAME)%'
 
     App\Service\Supplier\DataIntegrator:
         arguments:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $supplierFilename: '%env(VIF_SUPPLIERS_FILENAME)%'
+            $contactSupplierFilename: '%env(VIF_SUPPLIERS_CONTACT_FILENAME)%'
 
     App\Service\Order\DataSender:
         arguments:

@@ -20,13 +20,15 @@ class DataIntegrator
     protected $em;
     protected $vifFolder;
     protected $productFilename;
+    protected $supplierOwnerFilename;
     protected $taxRepository;
 
-    public function __construct($vifFolder, $productFilename, EntityManagerInterface $em, TaxRepository $taxRepository)
+    public function __construct($vifFolder, $productFilename, $supplierOwnerFilename, EntityManagerInterface $em, TaxRepository $taxRepository)
     {
         $this->em = $em;
         $this->vifFolder = $vifFolder;
         $this->productFilename = $productFilename;
+        $this->supplierOwnerFilename = $supplierOwnerFilename;
         $this->taxRepository = $taxRepository;
     }
 
@@ -35,6 +37,7 @@ class DataIntegrator
         $status = 0;
         $header = [];
         $lineNumber = 1;
+        $products = [];
 
         try {
             $file = fopen($this->vifFolder . $this->productFilename, 'r');
@@ -50,10 +53,12 @@ class DataIntegrator
                     else 
                         $product = $this->update($row, $header, $existingProduct);
 
+                    $products[] = $product;
                     $this->em->persist($product);
                 }
                 $lineNumber++;
             }
+            $this->editSuppliers($products);
             $this->em->flush();
         } catch( \Exception $e) {
             $status = 1;
@@ -63,16 +68,50 @@ class DataIntegrator
         }
     }
 
+    private function editSuppliers($editedProducts)
+    {
+        $status = 0;
+        $header = [];
+        $lineNumber = 1;
+        $products = $this->getResettedProducts($editedProducts);
+
+        try {
+            $file = fopen($this->vifFolder . $this->supplierOwnerFilename, 'r');
+            while(($row = fgetcsv($file, 0, ";")) !== false)
+            {
+                if ($lineNumber <= 1) {
+                    $header = $this->getHeader($row);
+                } else {
+                    $articleCode = trim($row[$header['Article']]);
+                    $supplierCode = trim($row[$header['Fourn.']]);
+                    $product = $this->getConcernedProduct($articleCode, $products);
+
+                    if (!is_null($product) && !$product->getIsIntern()) {
+                        $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $supplierCode]);
+                        $supplier->addProduct($product);
+                    }
+                }
+                $lineNumber++;
+            }
+        } catch( \Exception $e) {
+            $status = 1;
+        } finally {
+            // $this->em->flush();
+            fclose($file);
+            return $status;
+        }
+    }
+
     private function create($row, $header, $code)
     {
-        $tax = $this->getTax();
+        // $tax = $this->getTax();
         $seller = $this->getSeller();
-        $userGroups = $this->getUserGroups();
-        $catalogs = $this->getCatalogs();
+        // $userGroups = $this->getUserGroups();
+        // $catalogs = $this->getCatalogs();
         
-        $stock = $this->createStock();
-        $price = $this->createPrice();
-        $supplier = $this->getSupplier($row, $header);
+        // $stock = $this->createStock();
+        // $price = $this->createPrice();
+        // $supplier = $this->getSupplier($row, $header);
         $available = $this->getAvailability($row, $header);
         $categories = $this->getCategories($row, $header);
         $unit = $this->getUnit($row, $header);
@@ -83,36 +122,76 @@ class DataIntegrator
                 ->setCategories($categories)
                 ->setAvailable($available)
                 ->setSeller($seller)
-                ->setSupplier($supplier)
-                ->addPrice($price)
-                ->setTax($tax)
-                ->setStock($stock)
-                ->setNew(false)
-                ->setStockManaged(false)
-                ->setRequireLegalAge(false)
+                // ->setSupplier($supplier)
+                // ->addPrice($price)
+                // ->setTax($tax)
+                // ->setStock($stock)
+                // ->setNew(false)
+                ->setIsIntern(false)
+                // ->setStockManaged(false)
+                // ->setRequireLegalAge(false)
                 ->setWeight(0)
-                ->setProductGroup("J + 1")
-                ->setIsMixed(false)
-                ->setRequireDeclaration(false)
-                ->setContentWeight(0)
-                ->setUserGroups($userGroups)
-                ->setCatalogs($catalogs);
+                // ->setProductGroup("J + 1")
+                // ->setIsMixed(false)
+                // ->setRequireDeclaration(false)
+                // ->setContentWeight(0)
+                // ->setUserGroups($userGroups)
+                // ->setCatalogs($catalogs);
+                ;
+
+        $this->setInternSupplierIfNeeded($product, $row, $header);
         return $product;
     }
 
     private function update($row, $header, $product)
     {
         $available = $this->getAvailability($row, $header);
-        $supplier = $this->getSupplier($row, $header);
+        // $supplier = $this->getSupplier($row, $header);
         $categories = $this->getCategories($row, $header);
         $unit = $this->getUnit($row, $header);
         $product->setName(trim($row[$header['LIBELLE']]))
                 ->setUnit($unit)
                 ->setAvailable($available)
-                ->setSupplier($supplier)
+                ->setIsIntern(false)
+                // ->setSupplier($supplier)
                 ->setCategories($categories);
 
+        $this->setInternSupplierIfNeeded($product, $row, $header);
         return $product;
+    }
+
+    private function setInternSupplierIfNeeded(&$product, $row, $header)
+    {
+        $type = trim($row[$header['TYPE']]);
+        $site = trim($row[$header['SITE PRODUCTION']]);
+
+        if ($type == "VTE" && strlen(strval($site)) > 0) {
+            $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $site]);
+            $supplier->addProduct($product);
+            $product->setIsIntern(true);
+        }
+    }
+
+    private function getConcernedProduct($code, $products)
+    {
+        foreach ($products as $product) {
+            if ($product->getSku() == $code)
+                return $product;
+        }
+        return null;
+    }
+
+    private function getResettedProducts($editedProducts)
+    {
+        foreach ($editedProducts as $product) {
+            if (!$product->getIsIntern()) {
+                $suppliers = $product->getSuppliers();
+                foreach ($suppliers as $supplier) {
+                    $supplier->removeProduct($product);
+                }
+            }
+        }
+        return $editedProducts;
     }
 
     private function createStock()

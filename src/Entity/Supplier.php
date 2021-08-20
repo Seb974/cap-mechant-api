@@ -32,13 +32,13 @@ class Supplier
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read", "users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=120, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read", "users_read"})
      */
     private $name;
 
@@ -56,8 +56,8 @@ class Supplier
     // private $email;
 
     /**
-     * @ORM\Column(type="string", length=15, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read"})
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read", "users_read"})
      * @Assert\Regex(
      *     pattern="/^(?:(?:\+|00)33|(?:\+|00)262|0)[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/",
      *     match=true,
@@ -80,13 +80,13 @@ class Supplier
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read", "users_read"})
      */
     private $isIntern;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "orders_read", "users_read"})
      */
     private $vifCode;
 
@@ -98,7 +98,7 @@ class Supplier
 
     /**
      * @ORM\Column(type="array", nullable=true)
-     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read"})
+     * @Groups({"suppliers_read", "provisions_read", "products_read", "provision_write", "orders_read", "users_read"})
      */
     private $emails = [];
 

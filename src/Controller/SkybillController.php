@@ -20,15 +20,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class SkybillController extends AbstractController
 {
-    /**
+    /*
      * @Route("/api/skybills/{id}", name="skybill-create", methods={"POST"})
      *
      * Informations :
      * Create the skybill in ZPL encoded format
      */
-    public function create(OrderEntity $order, Chronopost $chronopost): JsonResponse
-    {
-        $skybill = $chronopost->getSkybill($order->getReservationNumber());
-        return new JsonResponse(mb_convert_encoding($skybill, 'UTF-8', 'UTF-8'));
-    }
+    // public function create(OrderEntity $order, Chronopost $chronopost): JsonResponse
+    // {
+    //     // $skybill = $chronopost->getSkybill($order->getReservationNumber());
+    //     return new JsonResponse(mb_convert_encoding($skybill, 'UTF-8', 'UTF-8'));
+    // }
 }

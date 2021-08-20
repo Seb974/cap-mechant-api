@@ -94,6 +94,12 @@ class Provision
      */
     private $metas;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @Groups({"provisions_read", "provision_write"})
+     */
+    private $user;
+
     public function __construct()
     {
         $this->goods = new ArrayCollection();
@@ -214,6 +220,18 @@ class Provision
     public function setMetas(?Meta $metas): self
     {
         $this->metas = $metas;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

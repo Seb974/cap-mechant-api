@@ -39,7 +39,7 @@ class ProvisionNotifier
     {
         $supplierName = $provision->getSupplier()->getName();
         $provisionDate = date_format($provision->getProvisionDate(), 'd/m/Y');
-        return "Bonjour " . $supplierName . ",\nVoici ci-dessous notre commande pour le ". $provisionDate ." à livrer au " . $this->getAddress($provision) . " :\n";
+        return "Bonjour " . $supplierName . ",\nVoici ci-dessous la commande du site ". $provision->getUser()->getName() . " pour le ". $provisionDate ." à livrer au " . $this->getAddress($provision) . " :\n";
     }
 
     private function getProductName($good) {
