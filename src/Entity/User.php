@@ -125,7 +125,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
-     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read", "provisions_read"})
      */
     private $vifCode;
 

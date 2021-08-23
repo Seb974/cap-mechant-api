@@ -15,19 +15,14 @@ class DataSender
         $this->ordersFilename = $ordersFilename;
     }
 
-    public function sendToVIF($order)
+    public function sendToVIF($provision)
     {
         try {
             $file = fopen($this->vifFolder . $this->ordersFilename, 'a');
-            $internalItems = $this->getInternalItems($order);
-            foreach ($internalItems as $site => $items) {
-                if (count($items) > 0) {
-                    $this->setHeader($file, $site, $order);
-                    foreach ($items as $key => $item) {
-                        $formattedItem = $this->getFormattedRowItem($site, $order, $key, $item);
-                        fputcsv($file, $formattedItem, $this->delimiter);
-                    }
-                }
+            $this->setHeader($file, $provision);
+            foreach ($provision->getGoods() as $key => $good) {
+                $formattedGood = $this->getFormattedRowGood($provision, $key, $good);
+                fputcsv($file, $formattedGood, $this->delimiter);
             }
         } catch(\Exception $e) {
             dump($e->getMessage());
@@ -37,46 +32,35 @@ class DataSender
         }
     }
 
-    private function getInternalItems($order)
-    {
-        $internalProducts = [];
-        foreach ($order->getItems() as $item) {
-            $supplier = $item->getProduct()->getSupplier();
-            if ($supplier->getIsIntern())
-                $internalProducts[$supplier->getVifCode()][] = $item;
-        }
-        return $internalProducts;
-    }
-
-    private function getFormattedRowItem($site, $order, $key, $item)
+    private function getFormattedRowGood($provision, $key, $good)
     {
         return [
             'L',
             'CL',
-            $site,
-            'S' . str_pad(strval($order->getId()), 10, "0", STR_PAD_LEFT),
+            $provision->getSupplier()->getVifCode(),
+            'S' . str_pad(strval($provision->getId()), 10, "0", STR_PAD_LEFT),
             $key + 1,
-            $item->getProduct()->getSku(),
-            $item->getOrderedQty() * 1000,
-            $item->getUnit()
+            $good->getProduct()->getSku(),
+            $good->getQuantity() * 1000,
+            $good->getUnit()
         ];
     }
 
-    private function setHeader($file, $site, $order)
+    private function setHeader($file, $provision)
     {
-        $header = $this->getHeaderSite($site, $order);
+        $header = $this->getHeaderSite($provision);
         fputcsv($file, $header, $this->delimiter);
     }
 
-    private function getHeaderSite($site, $order)
+    private function getHeaderSite($provision)
     {
         return [
             'E',
             'CL',
-            $site,
-            'S' . str_pad(strval($order->getId()), 10, "0", STR_PAD_LEFT),
-            $order->getUser()->getVifCode(),
-            $order->getDeliveryDate()->format('d/m/Y'), 
+            $provision->getSupplier()->getVifCode(),
+            'S' . str_pad(strval($provision->getId()), 10, "0", STR_PAD_LEFT),
+            $provision->getUser()->getVifCode(),
+            $provision->getProvisionDate()->format('d/m/Y'), 
             (new \DateTime())->format('d/m/Y')
         ];
     }

@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
 use App\Entity\User;
 use App\Entity\OrderEntity;
+use App\Entity\Provision;
 use App\Service\Request\PostRequest;
 use App\Service\Axonaut\User as AxonautUser;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,5 +72,17 @@ class AccountingController extends AbstractController
         return $rolesManager->isUserGranted($user, "ROLE_ADMIN") ?
                 new JsonResponse($axonaut->getAllInvoices($from, $to)) :
                 new JsonResponse($axonaut->getInvoicesForUser($user->getAccountingId(), $from, $to));
+    }
+
+    /**
+     * @Route("/api/provisions/{id}/email", name="provision-get", methods={"GET"})
+     * @IsGranted("ROLE_TEAM")
+     *
+     * Informations :
+     * get provision email
+     */
+    public function getEmail(Provision $provision)
+    {
+        return $this->render('email/provision.html.twig', ['provision' => $provision]);
     }
 }

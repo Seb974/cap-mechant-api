@@ -3,6 +3,7 @@
 namespace App\EventSubscriber\Provision;
 
 use App\Entity\Provision;
+use App\Service\Order\DataSender;
 use App\Service\Stock\StockManager;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -13,12 +14,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProvisionCreationSubscriber implements EventSubscriberInterface 
 {
+    private $dataSender;
     private $stockManager;
     private $smsNotifier;
     private $emailNotifier;
 
-    public function __construct(SMSNotifier $smsNotifier, EmailNotifier $emailNotifier, StockManager $stockManager)
+    public function __construct(SMSNotifier $smsNotifier, EmailNotifier $emailNotifier, StockManager $stockManager, DataSender $dataSender)
     {
+        $this->dataSender = $dataSender;
         $this->stockManager = $stockManager;
         $this->smsNotifier = $smsNotifier;
         $this->emailNotifier = $emailNotifier;
@@ -34,20 +37,27 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
         $result = $event->getControllerResult();
         $request = $event->getRequest();
         $method = $request->getMethod();
+        $smsStatus = '';
+        $emailStatus = '';
 
-        if ( $result instanceof Provision ) {
-            if ( $method === "POST" ) {
+        if ( $result instanceof Provision && in_array($method, ["POST", "PUT"]) ) {
+            if ( $method == "POST" ) {
                 $status = !is_null($result->getStatus()) ? $result->getStatus() : "ORDERED";
-                if ($status === "ORDERED") {
-                    if (str_contains(strtoupper($result->getSendingMode()), "SMS"))
-                        $this->smsNotifier->notifyOrder($result);
-                    if (str_contains(strtoupper($result->getSendingMode()), "EMAIL"))
-                        $this->emailNotifier->notify($result);
-                }
                 $result->setStatus($status);
             }
-            else if ( $method === "PUT" && $result->getStatus() === "ORDERED" && !$result->getIntegrated() ) {
-                $result->setStatus("RECEIVED");
+
+            if ($result->getStatus() == "ORDERED") {
+                if ($result->getSupplier()->getIsIntern()) {
+                    $this->dataSender->sendToVIF($result);
+                // } else {
+                    if (str_contains(strtoupper($result->getSendingMode()), "SMS"))
+                        $smsStatus = $this->smsNotifier->notifyOrder($result);
+                    if (str_contains(strtoupper($result->getSendingMode()), "EMAIL"))
+                        $emailStatus = $this->emailNotifier->notify($result);
+                    $failure = $smsStatus === 'failed' || $emailStatus === 'failed';
+                    dump($failure);
+                    $result->setIntegrated(!$failure);
+                }
             }
         }
     }

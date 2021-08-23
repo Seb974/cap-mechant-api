@@ -13,9 +13,17 @@ class ProvisionNotifier
 
     public function notifyOrder($provision)
     {
-        $message = $this->getOrderMessage($provision);
-        if (strlen($message) > 0)
-            $this->sms->sendTo($provision->getSupplier()->getPhone(), $message);
+        try {
+            $status = 'done';
+            // throw new \Exception("L'envoi du SMS a merdé");
+            $message = $this->getOrderMessage($provision);
+            if (strlen($message) > 0)
+                $this->sms->sendTo($provision->getSupplier()->getPhone(), $message);
+        } catch (\Exception $e) {
+            $status = 'failed';
+        } finally {
+            return $status;
+        }
     }
 
     private function getOrderMessage($provision)
@@ -31,8 +39,7 @@ class ProvisionNotifier
 
     private function getFormattedRow($good)
     {
-        $product = $this->getProductName($good);
-        return " - " . $product . " : " . $good->getQuantity() . $good->getUnit() . "\n";
+        return " - " . $good->getProduct()->getName() . " : " . $good->getQuantity() . $good->getUnit() . "\n";
     }
 
     private function getIntro($provision)
@@ -42,11 +49,11 @@ class ProvisionNotifier
         return "Bonjour " . $supplierName . ",\nVoici ci-dessous la commande du site ". $provision->getUser()->getName() . " pour le ". $provisionDate ." à livrer au " . $this->getAddress($provision) . " :\n";
     }
 
-    private function getProductName($good) {
-        $variationName = is_null($good->getVariation()) ? "" : " - " . $good->getVariation()->getColor();
-        $sizeName = is_null($good->getSize()) ? "" : " " . $good->getSize()->getName();
-        return $good->getProduct()->getName() . $variationName . $sizeName;
-    }
+    // private function getProductName($good) {
+    //     $variationName = is_null($good->getVariation()) ? "" : " - " . $good->getVariation()->getColor();
+    //     $sizeName = is_null($good->getSize()) ? "" : " " . $good->getSize()->getName();
+    //     return $good->getProduct()->getName() . $variationName . $sizeName;
+    // }
 
     private function getAddress($provision)
     {

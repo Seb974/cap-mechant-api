@@ -2,15 +2,15 @@
 
 namespace App\Service\Order;
 
-use App\Entity\Group;
-use App\Entity\Product;
-use App\Service\Tax\Tax;
-use App\Service\Package\Packer;
-use App\Service\Sms\OrdersNotifier;
-use App\Service\Stock\StockManager;
-use App\Service\Seller\SellerAccount;
-use App\Service\User\UserGroupDefiner;
-use App\Service\Deliverer\DelivererAccount;
+// use App\Entity\Group;
+// use App\Entity\Product;
+// use App\Service\Tax\Tax;
+// use App\Service\Package\Packer;
+// use App\Service\Sms\OrdersNotifier;
+// use App\Service\Stock\StockManager;
+// use App\Service\Seller\SellerAccount;
+// use App\Service\User\UserGroupDefiner;
+// use App\Service\Deliverer\DelivererAccount;
 use Symfony\Component\Security\Core\Security;
 
 class Constructor
