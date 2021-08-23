@@ -45,9 +45,9 @@ class GetDataCommand extends Command
         $entity = $input->getArgument('entity');
 
         if (!$entity) {
-            $status = $this->userIntegrator->editUsers();
             $status = $this->supplierIntegrator->editSuppliers();
             $status = $this->productIntegrator->editProducts();
+            $status = $this->userIntegrator->editUsers();
         } 
         else {
             $status = strtoupper($entity) == 'USER' ? $this->userIntegrator->editUsers() :

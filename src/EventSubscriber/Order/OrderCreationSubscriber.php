@@ -61,66 +61,66 @@ class OrderCreationSubscriber implements EventSubscriberInterface
         $method = $request->getMethod();
         $origin = $request->headers->get('origin');
         $user = $this->security->getUser();
-        $userGroup = $this->userGroupDefiner->getShopGroup($user);
+        // $userGroup = $this->userGroupDefiner->getShopGroup($user);
 
         if ( $result instanceof OrderEntity ) {
             if ( $origin === $this->publicDomain )
-                $this->publicActions($request, $method, $userGroup, $result);
+                $this->publicActions($method, $result);
             else if ( $origin === $this->adminDomain )
                 $this->adminActions($method, $result);
         }
     }
 
-    private function publicActions($request, $method, $userGroup, $order)
+    private function publicActions($method, $order)
     {
         if ( $method === "POST" ) {
             $this->constructor->adjustOrder($order);
         } else if ( $method === "PUT" ) {
-            if (!$userGroup->getOnlinePayment() || ($userGroup->getOnlinePayment() && $this->isCurrentUser($order->getPaymentId(), $request)) )
-                throw new \Exception();
+            // if (!$userGroup->getOnlinePayment() || ($userGroup->getOnlinePayment() && $this->isCurrentUser($order->getPaymentId(), $request)) )
+            //     throw new \Exception();
 
             $order->setStatus("WAITING");
         }
         if (($method === "POST" || $method === "PUT") && $order->getStatus() === "WAITING") {
             $this->updateEntitiesCounters($order);
-            if ($order->getCatalog()->getNeedsParcel())
-                $this->chronopost->setReservationNumbers($order);
+            // if ($order->getCatalog()->getNeedsParcel())
+            //     $this->chronopost->setReservationNumbers($order);
         }
     }
 
     private function adminActions($method, $order)
     {
         if ( $method === "POST" && $order->getStatus() === "WAITING" ) {
-            $this->constructor->adjustAdminOrder($order);
+            // $this->constructor->adjustAdminOrder($order);
             $this->updateEntitiesCounters($order);
-            if ($order->getCatalog()->getNeedsParcel())
-                $this->chronopost->setReservationNumbers($order);
+            // if ($order->getCatalog()->getNeedsParcel())
+            //     $this->chronopost->setReservationNumbers($order);
         } else if ( $method === "PUT" ) {
             if ( in_array($order->getStatus(), ["WAITING", "PRE-PREPARED"]) )
                 $this->constructor->adjustPreparation($order);
-            else if ( in_array($order->getStatus(), ["COLLECTABLE", "SHIPPED", "DELIVERED"]) ) {
-                if (is_null($order->getRegulated()) || !$order->getRegulated())
-                    $this->constructor->adjustDelivery($order);
-                else
-                    $this->sellerAccount->dispatchTurnover($order, "DECREASE");
-            }
+            // else if ( in_array($order->getStatus(), ["COLLECTABLE", "SHIPPED", "DELIVERED"]) ) {
+            //     if (is_null($order->getRegulated()) || !$order->getRegulated())
+            //         // $this->constructor->adjustDelivery($order);
+            //     else
+            //         // $this->sellerAccount->dispatchTurnover($order, "DECREASE");
+            // }
         }
     }
 
     private function updateEntitiesCounters($order)
     {
-        $this->userOrderCounter->increase($order);
+        // $this->userOrderCounter->increase($order);
         $this->productSalesCounter->increaseAll($order);
-        $this->promotionUseCounter->increase($order);
-        $this->stockManager->decreaseOrder($order);
+        // $this->promotionUseCounter->increase($order);
+        // $this->stockManager->decreaseOrder($order);
     }
 
-    private function isCurrentUser($uuid, $request)
-    {
-        $userUuid = $request->query->get('id');
-        $pattern = "/^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/";
-        if ($uuid === null || preg_match($pattern, $uuid) === 0 || preg_match($pattern, $uuid) === false)
-            return false;
-        return $userUuid == $uuid;
-    }
+    // private function isCurrentUser($uuid, $request)
+    // {
+    //     $userUuid = $request->query->get('id');
+    //     $pattern = "/^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/";
+    //     if ($uuid === null || preg_match($pattern, $uuid) === 0 || preg_match($pattern, $uuid) === false)
+    //         return false;
+    //     return $userUuid == $uuid;
+    // }
 }

@@ -3,6 +3,7 @@
 namespace App\Service\User;
 
 use App\Entity\Meta;
+use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -13,13 +14,17 @@ class DataIntegrator
     protected $encoder;
     protected $vifFolder;
     protected $userFilename;
+    protected $productHeaderLine;
+    protected $userProductsFilename;
 
-    public function __construct($vifFolder, $userFilename, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
+    public function __construct($vifFolder, $userFilename, $userProductsFilename, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
     {
         $this->em = $em;
         $this->encoder = $encoder;
+        $this->productHeaderLine = 2;
         $this->vifFolder = $vifFolder;
         $this->userFilename = $userFilename;
+        $this->userProductsFilename = $userProductsFilename;
     }
 
     public function editUsers()
@@ -27,6 +32,7 @@ class DataIntegrator
         $status = 0;
         $header = [];
         $lineNumber = 1;
+        $users = [];
 
         try {
             $file = fopen($this->vifFolder . $this->userFilename, 'r');
@@ -39,20 +45,77 @@ class DataIntegrator
                     $existingUser = $this->em->getRepository(User::class)->findOneBy(['vifCode' => $code]);
                     if (is_null($existingUser))
                         $user = $this->create($row, $header, $code);
-                    else 
+                    else
                         $user = $this->update($row, $header, $existingUser);
 
+                    $users[] = $user;
                     $this->em->persist($user);
                 }
                 $lineNumber++;
             }
+            $this->editProducts($users);
+        } catch( \Exception $e) {
+            $status = 1;
+        } finally {
             $this->em->flush();
+            fclose($file);
+            return $status;
+        }
+    }
+
+    private function editProducts($editedUsers)
+    {
+        $status = 0;
+        $header = [];
+        $lineNumber = 1;
+        $users = $this->getResettedUsers($editedUsers);
+
+        try {
+            $file = fopen($this->vifFolder . $this->userProductsFilename, 'r');
+            while(($row = fgetcsv($file, 0, ",")) !== false)
+            {
+                if ($lineNumber == $this->productHeaderLine) {
+                    $header = $this->getHeader($row);
+                } else if ($lineNumber > $this->productHeaderLine) {
+                    $userCode = trim($row[$header['ctie']]);
+                    $productCode = trim($row[$header['cart']]);
+                    $user = $this->getConcernedUser($userCode, $users);
+                    
+                    if (!is_null($user)) {
+                        $product = $this->em->getRepository(Product::class)->findOneBy(['sku' => $productCode]);
+                        if (!is_null($product))
+                            $product->addUser($user);
+                    }
+                }
+                $lineNumber++;
+            }
+
         } catch( \Exception $e) {
             $status = 1;
         } finally {
             fclose($file);
             return $status;
         }
+    }
+
+    private function getResettedUsers($editedUsers)
+    {
+        foreach ($editedUsers as $user) {
+            $products = $user->getProducts();
+            foreach ($products as $product) {
+                $product->removeUser($user);
+            }
+        }
+        return $editedUsers;
+    }
+
+    private function getConcernedUser($code, $users)
+    {
+        foreach ($users as $user) {
+            if ($user->getVifCode() == $code)
+                return $user;
+        }
+        return null;
     }
 
     private function create($row, $header, $code)

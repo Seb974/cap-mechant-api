@@ -18,16 +18,18 @@ class Mailer
     public function sendMessage($sendTo, string $subject, string $template, array $args)
     {
         try {
-            $status = '';
+            $status = 'done';
+            // throw new \Exception("L'envoi d'email a merdé");
             $message = new \Swift_Message();
             $message->setSubject($subject)
                     ->setFrom($this->sender)
                     ->setTo($sendTo)
                     ->setBody($this->templating->render($template, $args), 'text/html');
+            $this->mailer->send($message);
         } catch (\Exception $e) {
             $status = 'failed';
         } finally {
-            return $status !== 'failed' ? $this->mailer->send($message) : '';
+            return $status;
         }
     }
 }
