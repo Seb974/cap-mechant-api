@@ -25,14 +25,14 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          "enable_max_depth"=true
  *     },
  *     collectionOperations={
- *          "GET"={"security"="is_granted('ROLE_TEAM') or object.getUser() == user"},
+ *          "GET"={"security"="is_granted('ROLE_USER')"},
  *          "POST"
  *     },
  *     itemOperations={
  *          "GET"={"security"="is_granted('ROLE_TEAM') or object.getUser() == user"},
  *          "PUT"={"security"="is_granted('ROLE_TEAM') or object.isOwner(request, object)"},
- *          "PATCH"={"security"="is_granted('ROLE_PICKER')"},
- *          "DELETE"={"security"="is_granted('ROLE_PICKER') or object.isOwner(request, object)"}
+ *          "PATCH"={"security"="is_granted('ROLE_TEAM')"},
+ *          "DELETE"={"security"="is_granted('ROLE_TEAM') or object.isOwner(request, object)"}
  *     },
  *     mercure="object.getMercureOptions(object.getUser())"
  * )

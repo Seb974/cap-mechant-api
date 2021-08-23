@@ -15,6 +15,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use App\Entity\OrderEntity;
 use App\Entity\Touring;
 
 class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
@@ -85,6 +86,8 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
                              ->andWhere("$rootAlias.isOpen = :open")
                              ->setParameter("open", true);
             }
+
+           
         }
     }
 }
