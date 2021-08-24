@@ -55,21 +55,21 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
         if ($origin === $this->publicDomain && !$this->auth->isGranted('ROLE_ADMIN') && ($user instanceof User || $user == null))
         {
             $rootAlias = $queryBuilder->getRootAliases()[0];
-            $userGroup = $this->userGroupDefiner->getUserGroup($user);
+            // $userGroup = $this->userGroupDefiner->getUserGroup($user);
 
-            $group = [Group::class];
+            // $group = [Group::class];
             $needingAvailability = [Promotion::class];
-            $groupFilterable = [Category::class, Product::class];
+            // $groupFilterable = [Category::class, Product::class];
 
-            if (in_array($resourceClass, $group)) {
-                $queryBuilder->andWhere("$rootAlias.id = :userGroupId")
-                             ->setParameter("userGroupId", $userGroup->getId());
-            }
+            // if (in_array($resourceClass, $group)) {
+            //     $queryBuilder->andWhere("$rootAlias.id = :userGroupId")
+            //                  ->setParameter("userGroupId", $userGroup->getId());
+            // }
 
-            if (in_array($resourceClass, $groupFilterable)) {
-                $queryBuilder->andWhere(":userGroup MEMBER OF $rootAlias.userGroups")
-                             ->setParameter("userGroup", $userGroup);
-            }
+            // if (in_array($resourceClass, $groupFilterable)) {
+            //     $queryBuilder->andWhere(":userGroup MEMBER OF $rootAlias.userGroups")
+            //                  ->setParameter("userGroup", $userGroup);
+            // }
 
             if (in_array($resourceClass, $needingAvailability)) {
                 $queryBuilder->andWhere("$rootAlias.used is NULL OR $rootAlias.used < $rootAlias.maxUsage")
