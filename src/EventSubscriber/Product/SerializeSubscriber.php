@@ -43,16 +43,16 @@ class SerializeSubscriber implements EventSubscriberInterface
 
     public function filterPrices(ViewEvent $event)
     {
-        $result = json_decode($event->getControllerResult(), true);
-        $method = $event->getRequest()->getMethod();
-        $origin = $event->getRequest()->headers->get("origin");
+        // $result = json_decode($event->getControllerResult(), true);
+        // $method = $event->getRequest()->getMethod();
+        // $origin = $event->getRequest()->headers->get("origin");
 
-        if ($origin != $this->admin && $origin != $this->server && $method == "GET" && (strpos(strtoupper($result['@type']), "PRODUCT") !== false || 
-           (strpos(strtoupper($result['@type']), "COLLECTION") !== false && count($result['hydra:member']) > 0 && 
-            strpos(strtoupper($result['hydra:member'][0]['@type']), "PRODUCT") !== false)) )
-        {
-            $response = $this->priceFilter->filter($result);
-            $event->setControllerResult(json_encode($response));
-        }
+        // if ($origin != $this->admin && $origin != $this->server && $method == "GET" && (strpos(strtoupper($result['@type']), "PRODUCT") !== false || 
+        //    (strpos(strtoupper($result['@type']), "COLLECTION") !== false && count($result['hydra:member']) > 0 && 
+        //     strpos(strtoupper($result['hydra:member'][0]['@type']), "PRODUCT") !== false)) )
+        // {
+        //     $response = $this->priceFilter->filter($result);
+        //     $event->setControllerResult(json_encode($response));
+        // }
     }
 }

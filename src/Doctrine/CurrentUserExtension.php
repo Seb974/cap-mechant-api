@@ -15,6 +15,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use App\Entity\OrderEntity;
 use App\Entity\Touring;
 
 class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
@@ -54,21 +55,21 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
         if ($origin === $this->publicDomain && !$this->auth->isGranted('ROLE_ADMIN') && ($user instanceof User || $user == null))
         {
             $rootAlias = $queryBuilder->getRootAliases()[0];
-            $userGroup = $this->userGroupDefiner->getUserGroup($user);
+            // $userGroup = $this->userGroupDefiner->getUserGroup($user);
 
-            $group = [Group::class];
+            // $group = [Group::class];
             $needingAvailability = [Promotion::class];
-            $groupFilterable = [Category::class, Product::class];
+            // $groupFilterable = [Category::class, Product::class];
 
-            if (in_array($resourceClass, $group)) {
-                $queryBuilder->andWhere("$rootAlias.id = :userGroupId")
-                             ->setParameter("userGroupId", $userGroup->getId());
-            }
+            // if (in_array($resourceClass, $group)) {
+            //     $queryBuilder->andWhere("$rootAlias.id = :userGroupId")
+            //                  ->setParameter("userGroupId", $userGroup->getId());
+            // }
 
-            if (in_array($resourceClass, $groupFilterable)) {
-                $queryBuilder->andWhere(":userGroup MEMBER OF $rootAlias.userGroups")
-                             ->setParameter("userGroup", $userGroup);
-            }
+            // if (in_array($resourceClass, $groupFilterable)) {
+            //     $queryBuilder->andWhere(":userGroup MEMBER OF $rootAlias.userGroups")
+            //                  ->setParameter("userGroup", $userGroup);
+            // }
 
             if (in_array($resourceClass, $needingAvailability)) {
                 $queryBuilder->andWhere("$rootAlias.used is NULL OR $rootAlias.used < $rootAlias.maxUsage")
@@ -85,6 +86,8 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
                              ->andWhere("$rootAlias.isOpen = :open")
                              ->setParameter("open", true);
             }
+
+           
         }
     }
 }

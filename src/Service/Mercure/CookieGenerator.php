@@ -56,7 +56,7 @@ class CookieGenerator
                       ->withValue($token)
                       ->withDomain($this->cookieDomain)
                       ->withPath($this->path)
-                      ->withSecure(true)
+                      ->withSecure(false)
                       ->withHttpOnly(true)
                       ->withSameSite('lax')
                       ->withExpires($expiresDate);
