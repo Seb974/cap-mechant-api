@@ -46,18 +46,17 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
                 $result->setStatus($status);
             }
 
-            if ($result->getStatus() == "ORDERED") {
-                if ($result->getSupplier()->getIsIntern()) {
+            if ($result->getStatus() == "ORDERED" && (is_null($result->getIntegrated()) || !$result->getIntegrated())) {
+                if ($result->getSupplier()->getIsIntern()) // {
                     $this->dataSender->sendToVIF($result);
                 // } else {
-                    if (str_contains(strtoupper($result->getSendingMode()), "SMS"))
-                        $smsStatus = $this->smsNotifier->notifyOrder($result);
-                    if (str_contains(strtoupper($result->getSendingMode()), "EMAIL"))
-                        $emailStatus = $this->emailNotifier->notify($result);
-                    $failure = $smsStatus === 'failed' || $emailStatus === 'failed';
-                    dump($failure);
-                    $result->setIntegrated(!$failure);
-                }
+                if (str_contains(strtoupper($result->getSendingMode()), "SMS"))
+                    $smsStatus = $this->smsNotifier->notifyOrder($result);
+                if (str_contains(strtoupper($result->getSendingMode()), "EMAIL"))
+                    $emailStatus = $this->emailNotifier->notify($result);
+                $failure = $smsStatus === 'failed' || $emailStatus === 'failed';
+                $result->setIntegrated(!$failure);
+                // }
             }
         }
     }
