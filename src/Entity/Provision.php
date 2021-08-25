@@ -23,17 +23,17 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *     },
  *     normalizationContext={"groups"={"provisions_read"}},
  *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_SELLER')"},
- *         "post"={"security"="is_granted('ROLE_SELLER')"},
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "post"={"security"="is_granted('ROLE_USER')"},
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_SELLER')"},
- *         "put"={"security"="is_granted('ROLE_SELLER')"},
- *         "patch"={"security"="is_granted('ROLE_SELLER')"},
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "put"={"security"="is_granted('ROLE_USER')"},
+ *         "patch"={"security"="is_granted('ROLE_USER')"},
  *         "delete"={"security"="is_granted('ROLE_SELLER')"},
  *     }
  * )
- * @ApiFilter(SearchFilter::class, properties={"supplier"="exact", "seller"="exact"})
+ * @ApiFilter(SearchFilter::class, properties={"supplier"="exact", "seller"="exact", "status"="partial"})
  * @ApiFilter(DateFilter::class, properties={"provisionDate"})
  */
 class Provision
@@ -93,6 +93,12 @@ class Provision
      * @Groups({"provisions_read", "provision_write"})
      */
     private $metas;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @Groups({"provisions_read", "provision_write"})
+     */
+    private $user;
 
     public function __construct()
     {
@@ -214,6 +220,18 @@ class Provision
     public function setMetas(?Meta $metas): self
     {
         $this->metas = $metas;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

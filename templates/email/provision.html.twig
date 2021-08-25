@@ -15,7 +15,7 @@
             </p>
             <br/>
             <p>
-                Voici ci-dessous notre commande, pour une livraison le {{ provision.provisionDate|date("d/m/Y") }} à l'adresse suivante :
+                Voici ci-dessous la commande du site <strong>{{ provision.user.name }}</strong>, pour une livraison le {{ provision.provisionDate|date("d/m/Y") }} à l'adresse suivante :
                 <br/><br/>
                 <i>{{ provision.metas.address }}</i><br/>
                 <i>{{ provision.metas.address2 }}</i><br/>

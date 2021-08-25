@@ -56,11 +56,11 @@ class Good
      */
     private $unit;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"provisions_read", "provision_write", "goods_read"})
      */
-    private $price;
+    // private $price;
 
     /**
      * @ORM\ManyToOne(targetEntity=Provision::class, inversedBy="goods")
@@ -68,23 +68,29 @@ class Good
      */
     private $provision;
 
-    /**
+    /*
      * @ORM\ManyToOne(targetEntity=Variation::class)
      * @Groups({"provisions_read", "provision_write", "goods_read"})
      */
-    private $variation;
+    // private $variation;
 
-    /**
+    /*
      * @ORM\ManyToOne(targetEntity=Size::class)
      * @Groups({"provisions_read", "provision_write", "goods_read"})
      */
-    private $size;
+    // private $size;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"provisions_read", "provision_write", "goods_read"})
      */
     private $received;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     * @Groups({"provisions_read", "provision_write", "goods_read"})
+     */
+    private $stock;
 
     public function getId(): ?int
     {
@@ -127,17 +133,17 @@ class Good
         return $this;
     }
 
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
+    // public function getPrice(): ?float
+    // {
+    //     return $this->price;
+    // }
 
-    public function setPrice(?float $price): self
-    {
-        $this->price = $price;
+    // public function setPrice(?float $price): self
+    // {
+    //     $this->price = $price;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getProvision(): ?Provision
     {
@@ -151,29 +157,29 @@ class Good
         return $this;
     }
 
-    public function getVariation(): ?Variation
-    {
-        return $this->variation;
-    }
+    // public function getVariation(): ?Variation
+    // {
+    //     return $this->variation;
+    // }
 
-    public function setVariation(?Variation $variation): self
-    {
-        $this->variation = $variation;
+    // public function setVariation(?Variation $variation): self
+    // {
+    //     $this->variation = $variation;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getSize(): ?Size
-    {
-        return $this->size;
-    }
+    // public function getSize(): ?Size
+    // {
+    //     return $this->size;
+    // }
 
-    public function setSize(?Size $size): self
-    {
-        $this->size = $size;
+    // public function setSize(?Size $size): self
+    // {
+    //     $this->size = $size;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getReceived(): ?float
     {
@@ -183,6 +189,18 @@ class Good
     public function setReceived(?float $received): self
     {
         $this->received = $received;
+
+        return $this;
+    }
+
+    public function getStock(): ?float
+    {
+        return $this->stock;
+    }
+
+    public function setStock(?float $stock): self
+    {
+        $this->stock = $stock;
 
         return $this;
     }

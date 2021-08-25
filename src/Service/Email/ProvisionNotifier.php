@@ -17,7 +17,7 @@ class ProvisionNotifier
     public function notify(Provision $provision)
     {
         return $this->mailer->sendMessage(
-            $provision->getSupplier()->getEmail(),
+            $provision->getSupplier()->getEmails(),
             "CAP MÉCHANT : Commande pour le " . ($provision->getProvisionDate()->format('d/m/Y')),
             "email/provision.html.twig",
             ['provision' => $provision]

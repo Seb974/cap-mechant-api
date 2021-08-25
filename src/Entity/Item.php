@@ -50,35 +50,35 @@ class Item
      */
     private $orderedQty;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"items_read", "orders_read", "admin:order_write", "tourings_read"})
      */
-    private $preparedQty;
+    // private $preparedQty;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"items_read", "orders_read", "admin:order_write", "tourings_read", "touring_write"})
      */
-    private $deliveredQty;
+    // private $deliveredQty;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"items_read", "orders_read", "admin:order_write", "tourings_read"})
      */
-    private $price;
+    // private $price;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"items_read", "orders_read", "admin:order_write", "tourings_read"})
      */
-    private $taxRate;
+    // private $taxRate;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"admin:items_read", "admin:orders_read", "admin:order_write", "tourings_read"})
      */
-    private $isAdjourned;
+    // private $isAdjourned;
 
     /**
      * @ORM\ManyToOne(targetEntity=OrderEntity::class, inversedBy="items")
@@ -92,17 +92,17 @@ class Item
      */
     private $isPrepared;
 
-    /**
+    /*
      * @ORM\ManyToOne(targetEntity=Variation::class)
      * @Groups({"items_read", "orders_read", "order_write", "tourings_read"})
      */
-    private $variation;
+    // private $variation;
 
-    /**
+    /*
      * @ORM\ManyToOne(targetEntity=Size::class)
      * @Groups({"items_read", "orders_read", "order_write", "tourings_read"})
      */
-    private $size;
+    // private $size;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
@@ -145,65 +145,65 @@ class Item
         return $this;
     }
 
-    public function getPreparedQty(): ?float
-    {
-        return $this->preparedQty;
-    }
+    // public function getPreparedQty(): ?float
+    // {
+    //     return $this->preparedQty;
+    // }
 
-    public function setPreparedQty(?float $preparedQty): self
-    {
-        $this->preparedQty = $preparedQty;
+    // public function setPreparedQty(?float $preparedQty): self
+    // {
+    //     $this->preparedQty = $preparedQty;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getDeliveredQty(): ?float
-    {
-        return $this->deliveredQty;
-    }
+    // public function getDeliveredQty(): ?float
+    // {
+    //     return $this->deliveredQty;
+    // }
 
-    public function setDeliveredQty(?float $deliveredQty): self
-    {
-        $this->deliveredQty = $deliveredQty;
+    // public function setDeliveredQty(?float $deliveredQty): self
+    // {
+    //     $this->deliveredQty = $deliveredQty;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getPrice(): ?float
-    {
-        return $this->price;
-    }
+    // public function getPrice(): ?float
+    // {
+    //     return $this->price;
+    // }
 
-    public function setPrice(?float $price): self
-    {
-        $this->price = $price;
+    // public function setPrice(?float $price): self
+    // {
+    //     $this->price = $price;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getTaxRate(): ?float
-    {
-        return $this->taxRate;
-    }
+    // public function getTaxRate(): ?float
+    // {
+    //     return $this->taxRate;
+    // }
 
-    public function setTaxRate(?float $taxRate): self
-    {
-        $this->taxRate = $taxRate;
+    // public function setTaxRate(?float $taxRate): self
+    // {
+    //     $this->taxRate = $taxRate;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getIsAdjourned(): ?bool
-    {
-        return $this->isAdjourned;
-    }
+    // public function getIsAdjourned(): ?bool
+    // {
+    //     return $this->isAdjourned;
+    // }
 
-    public function setIsAdjourned(?bool $isAdjourned): self
-    {
-        $this->isAdjourned = $isAdjourned;
+    // public function setIsAdjourned(?bool $isAdjourned): self
+    // {
+    //     $this->isAdjourned = $isAdjourned;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getOrderEntity(): ?OrderEntity
     {
@@ -229,29 +229,29 @@ class Item
         return $this;
     }
 
-    public function getVariation(): ?Variation
-    {
-        return $this->variation;
-    }
+    // public function getVariation(): ?Variation
+    // {
+    //     return $this->variation;
+    // }
 
-    public function setVariation(?Variation $variation): self
-    {
-        $this->variation = $variation;
+    // public function setVariation(?Variation $variation): self
+    // {
+    //     $this->variation = $variation;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getSize(): ?Size
-    {
-        return $this->size;
-    }
+    // public function getSize(): ?Size
+    // {
+    //     return $this->size;
+    // }
 
-    public function setSize(?Size $size): self
-    {
-        $this->size = $size;
+    // public function setSize(?Size $size): self
+    // {
+    //     $this->size = $size;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getUnit(): ?string
     {

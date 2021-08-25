@@ -58,31 +58,31 @@ class Product
      */
     private $sku;
 
-    /**
+    /*
      * @var Picture|null
      * 
      * @ORM\OneToOne(targetEntity=Picture::class, cascade={"persist", "remove"})
      * @Groups({"products_read", "product_write", "orders_read", "tourings_read"})
      */
-    private $image;
+    //private $image;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $discount;
+    // private $discount;
 
-    /**
+    /*
      * @ORM\Column(type="datetime", nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $offerEnd;
+    // private $offerEnd;
 
-    /**
+    /*
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $fullDescription;
+    // private $fullDescription;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -90,11 +90,11 @@ class Product
      */
     private $saleCount;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $new;
+    // private $new;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -102,17 +102,17 @@ class Product
      */
     private $available;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $stockManaged;
+    // private $stockManaged;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $requireLegalAge;
+    // private $requireLegalAge;
 
     /**
      * @ORM\Column(type="string", length=12, nullable=true)
@@ -126,23 +126,23 @@ class Product
      */
     private $weight;
 
-    /**
+    /*
      * @ORM\Column(type="string", length=60, nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $productGroup;
+    // private $productGroup;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"products_read", "product_write"})
      */
-    private $isMixed;
+    // private $isMixed;
 
-    /**
+    /*
      * @ORM\ManyToOne(targetEntity=Tax::class)
      * @Groups({"products_read", "product_write"})
      */
-    private $tax;
+    // private $tax;
 
     /**
      * @ORM\ManyToMany(targetEntity=Category::class)
@@ -150,29 +150,29 @@ class Product
      */
     private $categories;
 
-    /**
+    /*
      * @ORM\OneToOne(targetEntity=Stock::class, cascade={"persist", "remove"})
      * @Groups({"products_read", "product_write", "admin:orders_read"})
      */
-    private $stock;
+    // private $stock;
 
-    /**
+    /*
      * @ORM\OneToMany(targetEntity=Variation::class, mappedBy="product")
      * @Groups({"products_read", "product_write"})
      */
-    private $variations;
+    // private $variations;
 
-    /**
+    /*
      * @ORM\OneToMany(targetEntity=Component::class, mappedBy="owner", cascade={"persist", "remove"})
      * @Groups({"products_read", "product_write"})
      */
-    private $components;
+    // private $components;
 
-    /**
+    /*
      * @ORM\OneToMany(targetEntity=Price::class, mappedBy="product", cascade={"persist", "remove"})
      * @Groups({"products_read", "product_write"})
      */
-    private $prices;
+    // private $prices;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -180,53 +180,53 @@ class Product
      */
     private $updatedAt;
 
-    /**
+    /*
      * @ORM\ManyToMany(targetEntity=Group::class)
      * @Groups({"products_read", "product_write"})
      */
-    private $userGroups;
+    // private $userGroups;
 
-    /**
+    /*
      * @ORM\ManyToMany(targetEntity=Catalog::class)
      * @Groups({"products_read", "product_write"})
      */
-    private $catalogs;
+    // private $catalogs;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"seller:products_read", "product_write", "provisions_read", "goods_read"})
      */
-    private $isFabricated;
+    // private $isFabricated;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"seller:products_read", "product_write", "provisions_read", "goods_read"})
      */
-    private $isSold;
+    // private $isSold;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"seller:products_read", "provisions_read", "goods_read"})
      */
-    private $lastCost;
+    // private $lastCost;
 
-    /**
+    /*
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"seller:products_read", "product_write"})
      */
-    private $requireDeclaration;
+    // private $requireDeclaration;
 
-    /**
+    /*
      * @ORM\Column(type="float", nullable=true)
      * @Groups({"products_read", "product_write", "orders_read"})
      */
-    private $contentWeight;
+    // private $contentWeight;
 
-    /**
+    /*
      * @ORM\Column(type="integer", nullable=true)
      * @Groups({"seller:products_read", "product_write", "admin:orders_read"})
      */
-    private $accountingId;
+    // private $accountingId;
 
     /**
      * @ORM\ManyToOne(targetEntity=Seller::class)
@@ -235,19 +235,39 @@ class Product
     private $seller;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Supplier::class, inversedBy="products")
+     * @Groups({"products_read", "product_write", "orders_read"})
+     */
+    private $suppliers;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"products_read", "product_write", "orders_read"})
+     */
+    private $isIntern;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="products")
+     * @Groups({"not_existing"})
+     */
+    private $users;
+
+    /*
      * @ORM\ManyToOne(targetEntity=Supplier::class)
      * @Groups({"products_read", "product_write", "orders_read"})
      */
-    private $supplier;
+    // private $supplier;
 
     public function __construct()
     {
         $this->categories = new ArrayCollection();
-        $this->variations = new ArrayCollection();
-        $this->components = new ArrayCollection();
-        $this->prices = new ArrayCollection();
-        $this->userGroups = new ArrayCollection();
+        // $this->variations = new ArrayCollection();
+        // $this->components = new ArrayCollection();
+        // $this->prices = new ArrayCollection();
+        // $this->userGroups = new ArrayCollection();
         $this->catalogs = new ArrayCollection();
+        $this->suppliers = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -279,53 +299,53 @@ class Product
         return $this;
     }
 
-    public function getImage(): ?Picture
-    {
-        return $this->image;
-    }
+    // public function getImage(): ?Picture
+    // {
+    //     return $this->image;
+    // }
 
-    public function setImage(?Picture $image): self
-    {
-        $this->image = $image;
+    // public function setImage(?Picture $image): self
+    // {
+    //     $this->image = $image;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getDiscount(): ?float
-    {
-        return $this->discount;
-    }
+    // public function getDiscount(): ?float
+    // {
+    //     return $this->discount;
+    // }
 
-    public function setDiscount(?float $discount): self
-    {
-        $this->discount = $discount;
+    // public function setDiscount(?float $discount): self
+    // {
+    //     $this->discount = $discount;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getOfferEnd(): ?\DateTimeInterface
-    {
-        return $this->offerEnd;
-    }
+    // public function getOfferEnd(): ?\DateTimeInterface
+    // {
+    //     return $this->offerEnd;
+    // }
 
-    public function setOfferEnd(?\DateTimeInterface $offerEnd): self
-    {
-        $this->offerEnd = $offerEnd;
+    // public function setOfferEnd(?\DateTimeInterface $offerEnd): self
+    // {
+    //     $this->offerEnd = $offerEnd;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getFullDescription(): ?string
-    {
-        return $this->fullDescription;
-    }
+    // public function getFullDescription(): ?string
+    // {
+    //     return $this->fullDescription;
+    // }
 
-    public function setFullDescription(?string $fullDescription): self
-    {
-        $this->fullDescription = $fullDescription;
+    // public function setFullDescription(?string $fullDescription): self
+    // {
+    //     $this->fullDescription = $fullDescription;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getSaleCount(): ?int
     {
@@ -339,17 +359,17 @@ class Product
         return $this;
     }
 
-    public function getNew(): ?bool
-    {
-        return $this->new;
-    }
+    // public function getNew(): ?bool
+    // {
+    //     return $this->new;
+    // }
 
-    public function setNew(?bool $new): self
-    {
-        $this->new = $new;
+    // public function setNew(?bool $new): self
+    // {
+    //     $this->new = $new;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getAvailable(): ?bool
     {
@@ -363,29 +383,29 @@ class Product
         return $this;
     }
 
-    public function getStockManaged(): ?bool
-    {
-        return $this->stockManaged;
-    }
+    // public function getStockManaged(): ?bool
+    // {
+    //     return $this->stockManaged;
+    // }
 
-    public function setStockManaged(?bool $stockManaged): self
-    {
-        $this->stockManaged = $stockManaged;
+    // public function setStockManaged(?bool $stockManaged): self
+    // {
+    //     $this->stockManaged = $stockManaged;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getRequireLegalAge(): ?bool
-    {
-        return $this->requireLegalAge;
-    }
+    // public function getRequireLegalAge(): ?bool
+    // {
+    //     return $this->requireLegalAge;
+    // }
 
-    public function setRequireLegalAge(?bool $requireLegalAge): self
-    {
-        $this->requireLegalAge = $requireLegalAge;
+    // public function setRequireLegalAge(?bool $requireLegalAge): self
+    // {
+    //     $this->requireLegalAge = $requireLegalAge;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getUnit(): ?string
     {
@@ -411,41 +431,41 @@ class Product
         return $this;
     }
 
-    public function getProductGroup(): ?string
-    {
-        return $this->productGroup;
-    }
+    // public function getProductGroup(): ?string
+    // {
+    //     return $this->productGroup;
+    // }
 
-    public function setProductGroup(?string $productGroup): self
-    {
-        $this->productGroup = $productGroup;
+    // public function setProductGroup(?string $productGroup): self
+    // {
+    //     $this->productGroup = $productGroup;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getIsMixed(): ?bool
-    {
-        return $this->isMixed;
-    }
+    // public function getIsMixed(): ?bool
+    // {
+    //     return $this->isMixed;
+    // }
 
-    public function setIsMixed(?bool $isMixed): self
-    {
-        $this->isMixed = $isMixed;
+    // public function setIsMixed(?bool $isMixed): self
+    // {
+    //     $this->isMixed = $isMixed;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getTax(): ?Tax
-    {
-        return $this->tax;
-    }
+    // public function getTax(): ?Tax
+    // {
+    //     return $this->tax;
+    // }
 
-    public function setTax(?Tax $tax): self
-    {
-        $this->tax = $tax;
+    // public function setTax(?Tax $tax): self
+    // {
+    //     $this->tax = $tax;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection|Category[]
@@ -478,107 +498,107 @@ class Product
         return $this;
     }
 
-    public function getStock(): ?Stock
-    {
-        return $this->stock;
-    }
+    // public function getStock(): ?Stock
+    // {
+    //     return $this->stock;
+    // }
 
-    public function setStock(?Stock $stock): self
-    {
-        $this->stock = $stock;
+    // public function setStock(?Stock $stock): self
+    // {
+    //     $this->stock = $stock;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    /**
+    /*
      * @return Collection|Variation[]
      */
-    public function getVariations(): Collection
-    {
-        return $this->variations;
-    }
+    // public function getVariations(): Collection
+    // {
+    //     return $this->variations;
+    // }
 
-    public function addVariation(Variation $variation): self
-    {
-        if (!$this->variations->contains($variation)) {
-            $this->variations[] = $variation;
-            $variation->setProduct($this);
-        }
+    // public function addVariation(Variation $variation): self
+    // {
+    //     if (!$this->variations->contains($variation)) {
+    //         $this->variations[] = $variation;
+    //         $variation->setProduct($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeVariation(Variation $variation): self
-    {
-        if ($this->variations->removeElement($variation)) {
-            // set the owning side to null (unless already changed)
-            if ($variation->getProduct() === $this) {
-                $variation->setProduct(null);
-            }
-        }
+    // public function removeVariation(Variation $variation): self
+    // {
+    //     if ($this->variations->removeElement($variation)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($variation->getProduct() === $this) {
+    //             $variation->setProduct(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    /**
+    /*
      * @return Collection|Component[]
      */
-    public function getComponents(): Collection
-    {
-        return $this->components;
-    }
+    // public function getComponents(): Collection
+    // {
+    //     return $this->components;
+    // }
 
-    public function addComponent(Component $component): self
-    {
-        if (!$this->components->contains($component)) {
-            $this->components[] = $component;
-            $component->setOwner($this);
-        }
+    // public function addComponent(Component $component): self
+    // {
+    //     if (!$this->components->contains($component)) {
+    //         $this->components[] = $component;
+    //         $component->setOwner($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeComponent(Component $component): self
-    {
-        if ($this->components->removeElement($component)) {
-            // set the owning side to null (unless already changed)
-            if ($component->getOwner() === $this) {
-                $component->setOwner(null);
-            }
-        }
+    // public function removeComponent(Component $component): self
+    // {
+    //     if ($this->components->removeElement($component)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($component->getOwner() === $this) {
+    //             $component->setOwner(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    /**
+    /*
      * @return Collection|Price[]
      */
-    public function getPrices(): Collection
-    {
-        return $this->prices;
-    }
+    // public function getPrices(): Collection
+    // {
+    //     return $this->prices;
+    // }
 
-    public function addPrice(Price $price): self
-    {
-        if (!$this->prices->contains($price)) {
-            $this->prices[] = $price;
-            $price->setProduct($this);
-        }
+    // public function addPrice(Price $price): self
+    // {
+    //     if (!$this->prices->contains($price)) {
+    //         $this->prices[] = $price;
+    //         $price->setProduct($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removePrice(Price $price): self
-    {
-        if ($this->prices->removeElement($price)) {
-            // set the owning side to null (unless already changed)
-            if ($price->getProduct() === $this) {
-                $price->setProduct(null);
-            }
-        }
+    // public function removePrice(Price $price): self
+    // {
+    //     if ($this->prices->removeElement($price)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($price->getProduct() === $this) {
+    //             $price->setProduct(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getUpdatedAt(): ?\DateTimeInterface
     {
@@ -592,36 +612,36 @@ class Product
         return $this;
     }
 
-    /**
+    /*
      * @return Collection|Group[]
      */
-    public function getUserGroups(): Collection
-    {
-        return $this->userGroups;
-    }
+    // public function getUserGroups(): Collection
+    // {
+    //     return $this->userGroups;
+    // }
 
-    public function addUserGroup(Group $userGroup): self
-    {
-        if (!$this->userGroups->contains($userGroup)) {
-            $this->userGroups[] = $userGroup;
-        }
+    // public function addUserGroup(Group $userGroup): self
+    // {
+    //     if (!$this->userGroups->contains($userGroup)) {
+    //         $this->userGroups[] = $userGroup;
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeUserGroup(Group $userGroup): self
-    {
-        $this->userGroups->removeElement($userGroup);
+    // public function removeUserGroup(Group $userGroup): self
+    // {
+    //     $this->userGroups->removeElement($userGroup);
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function setUserGroups(Collection $userGroups)
-    {
-        $this->userGroups = $userGroups;
+    // public function setUserGroups(Collection $userGroups)
+    // {
+    //     $this->userGroups = $userGroups;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection|Catalog[]
@@ -654,77 +674,77 @@ class Product
         return $this;
     }
 
-    public function getIsFabricated(): ?bool
-    {
-        return $this->isFabricated;
-    }
+    // public function getIsFabricated(): ?bool
+    // {
+    //     return $this->isFabricated;
+    // }
 
-    public function setIsFabricated(?bool $isFabricated): self
-    {
-        $this->isFabricated = $isFabricated;
+    // public function setIsFabricated(?bool $isFabricated): self
+    // {
+    //     $this->isFabricated = $isFabricated;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getIsSold(): ?bool
-    {
-        return $this->isSold;
-    }
+    // public function getIsSold(): ?bool
+    // {
+    //     return $this->isSold;
+    // }
 
-    public function setIsSold(?bool $isSold): self
-    {
-        $this->isSold = $isSold;
+    // public function setIsSold(?bool $isSold): self
+    // {
+    //     $this->isSold = $isSold;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getLastCost(): ?float
-    {
-        return $this->lastCost;
-    }
+    // public function getLastCost(): ?float
+    // {
+    //     return $this->lastCost;
+    // }
 
-    public function setLastCost(?float $lastCost): self
-    {
-        $this->lastCost = $lastCost;
+    // public function setLastCost(?float $lastCost): self
+    // {
+    //     $this->lastCost = $lastCost;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getRequireDeclaration(): ?bool
-    {
-        return $this->requireDeclaration;
-    }
+    // public function getRequireDeclaration(): ?bool
+    // {
+    //     return $this->requireDeclaration;
+    // }
 
-    public function setRequireDeclaration(?bool $requireDeclaration): self
-    {
-        $this->requireDeclaration = $requireDeclaration;
+    // public function setRequireDeclaration(?bool $requireDeclaration): self
+    // {
+    //     $this->requireDeclaration = $requireDeclaration;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getContentWeight(): ?float
-    {
-        return $this->contentWeight;
-    }
+    // public function getContentWeight(): ?float
+    // {
+    //     return $this->contentWeight;
+    // }
 
-    public function setContentWeight(?float $contentWeight): self
-    {
-        $this->contentWeight = $contentWeight;
+    // public function setContentWeight(?float $contentWeight): self
+    // {
+    //     $this->contentWeight = $contentWeight;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getAccountingId(): ?int
-    {
-        return $this->accountingId;
-    }
+    // public function getAccountingId(): ?int
+    // {
+    //     return $this->accountingId;
+    // }
 
-    public function setAccountingId(?int $accountingId): self
-    {
-        $this->accountingId = $accountingId;
+    // public function setAccountingId(?int $accountingId): self
+    // {
+    //     $this->accountingId = $accountingId;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getSeller(): ?Seller
     {
@@ -738,14 +758,84 @@ class Product
         return $this;
     }
 
-    public function getSupplier(): ?Supplier
+    // public function getSupplier(): ?Supplier
+    // {
+    //     return $this->supplier;
+    // }
+
+    // public function setSupplier(?Supplier $supplier): self
+    // {
+    //     $this->supplier = $supplier;
+
+    //     return $this;
+    // }
+
+    /**
+     * @return Collection|Supplier[]
+     */
+    public function getSuppliers(): Collection
     {
-        return $this->supplier;
+        return $this->suppliers;
     }
 
-    public function setSupplier(?Supplier $supplier): self
+    public function addSupplier(Supplier $supplier): self
     {
-        $this->supplier = $supplier;
+        if (!$this->suppliers->contains($supplier)) {
+            $this->suppliers[] = $supplier;
+        }
+
+        return $this;
+    }
+
+    public function removeSupplier(Supplier $supplier): self
+    {
+        $this->suppliers->removeElement($supplier);
+
+        return $this;
+    }
+
+    public function setSuppliers(Collection $suppliers)
+    {
+        $this->suppliers = $suppliers;
+
+        return $this;
+    }
+
+    public function getIsIntern(): ?bool
+    {
+        return $this->isIntern;
+    }
+
+    public function setIsIntern(?bool $isIntern): self
+    {
+        $this->isIntern = $isIntern;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeProduct($this);
+        }
 
         return $this;
     }

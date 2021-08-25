@@ -34,7 +34,7 @@ class Meta
     /**
      * server domain, used to configure the Mercure hub topics
      */
-    private static $domain = 'https://api.cap-mechant.re';
+    private static $domain = 'http://localhost:8000';
 
     /**
      * @ORM\Id

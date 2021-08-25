@@ -34,13 +34,13 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"categories_read", "products_read", "category_write"})
+     * @Groups({"categories_read", "products_read", "category_write", "users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=60, nullable=true)
-     * @Groups({"categories_read", "products_read", "category_write"})
+     * @Groups({"categories_read", "products_read", "category_write", "users_read"})
      * @Assert\NotBlank(message="Un nom est obligatoire.")
      */
     private $name;
@@ -65,7 +65,7 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
-     * @Groups({"categories_read", "products_read", "category_write"})
+     * @Groups({"categories_read", "products_read", "category_write", "users_read"})
      */
     private $code;
 
