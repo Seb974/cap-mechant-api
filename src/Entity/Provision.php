@@ -23,13 +23,13 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *     },
  *     normalizationContext={"groups"={"provisions_read"}},
  *     collectionOperations={
- *         "get"={"security"="is_granted('ROLE_SELLER')"},
- *         "post"={"security"="is_granted('ROLE_SELLER')"},
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "post"={"security"="is_granted('ROLE_USER')"},
  *     },
  *     itemOperations={
- *         "get"={"security"="is_granted('ROLE_SELLER')"},
- *         "put"={"security"="is_granted('ROLE_SELLER')"},
- *         "patch"={"security"="is_granted('ROLE_SELLER')"},
+ *         "get"={"security"="is_granted('ROLE_USER')"},
+ *         "put"={"security"="is_granted('ROLE_USER')"},
+ *         "patch"={"security"="is_granted('ROLE_USER')"},
  *         "delete"={"security"="is_granted('ROLE_SELLER')"},
  *     }
  * )

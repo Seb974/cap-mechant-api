@@ -58,7 +58,7 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
             // $userGroup = $this->userGroupDefiner->getUserGroup($user);
 
             // $group = [Group::class];
-            $needingAvailability = [Promotion::class];
+            // $needingAvailability = [Promotion::class];
             // $groupFilterable = [Category::class, Product::class];
 
             // if (in_array($resourceClass, $group)) {
@@ -71,20 +71,27 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
             //                  ->setParameter("userGroup", $userGroup);
             // }
 
-            if (in_array($resourceClass, $needingAvailability)) {
-                $queryBuilder->andWhere("$rootAlias.used is NULL OR $rootAlias.used < $rootAlias.maxUsage")
-                             ->andWhere("$rootAlias.endsAt is NULL OR $rootAlias.endsAt >= :today")
-                             ->setParameter("today", new \DateTime());
-            }
+            // if (in_array($resourceClass, $needingAvailability)) {
+            //     $queryBuilder->andWhere("$rootAlias.used is NULL OR $rootAlias.used < $rootAlias.maxUsage")
+            //                  ->andWhere("$rootAlias.endsAt is NULL OR $rootAlias.endsAt >= :today")
+            //                  ->setParameter("today", new \DateTime());
+            // }
 
-            if ($resourceClass == Touring::class) {
-                $queryBuilder->leftJoin("$rootAlias.orderEntities","o")
-                             ->leftJoin("o.user", "u")
+            // if ($resourceClass == Touring::class) {
+            //     $queryBuilder->leftJoin("$rootAlias.orderEntities","o")
+            //                  ->leftJoin("o.user", "u")
+            //                  ->andWhere("u IS NOT NULL")
+            //                  ->andWhere(":userId = u.id")
+            //                  ->setParameter("userId", $user->getId())
+            //                  ->andWhere("$rootAlias.isOpen = :open")
+            //                  ->setParameter("open", true);
+            // }
+
+            if ($resourceClass == Provision::class) {
+                $queryBuilder->leftJoin("$rootAlias.user","u")
                              ->andWhere("u IS NOT NULL")
                              ->andWhere(":userId = u.id")
-                             ->setParameter("userId", $user->getId())
-                             ->andWhere("$rootAlias.isOpen = :open")
-                             ->setParameter("open", true);
+                             ->setParameter("userId", $user->getId());
             }
 
            
