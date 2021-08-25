@@ -15,11 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      normalizationContext={"groups"={"suppliers_read"}},
  *      collectionOperations={
- *          "GET"={"security"="is_granted('ROLE_TEAM')"},
+ *          "GET"={"security"="is_granted('ROLE_SELLER')"},
  *          "POST"={"security"="is_granted('ROLE_SELLER')"},
  *     },
  *     itemOperations={
- *          "GET"={"security"="is_granted('ROLE_TEAM')"},
+ *          "GET"={"security"="is_granted('ROLE_SELLER')"},
  *          "PUT"={"security"="is_granted('ROLE_SELLER')"},
  *          "PATCH"={"security"="is_granted('ROLE_SELLER')"},
  *          "DELETE"={"security"="is_granted('ROLE_SELLER')"}
