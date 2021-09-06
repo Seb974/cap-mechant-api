@@ -4,12 +4,14 @@ namespace App\Service\Supplier;
 
 use App\Entity\Supplier;
 use App\Repository\SellerRepository;
+use App\Service\Parser\FileParser;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DataIntegrator
 {
     protected $em;
     protected $vifFolder;
+    protected $fileParser;
     protected $supplierFilename;
     protected $sellerRepository;
     protected $contactHeaderLine;
@@ -17,12 +19,13 @@ class DataIntegrator
     protected $contactSupplierFilename;
     protected $phonePattern = "/^(?:(?:\+|00)33|(?:\+|00)39|(?:\+|00)262|0)[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/";
 
-    public function __construct($vifFolder, $supplierFilename, $contactSupplierFilename, EntityManagerInterface $em, SellerRepository $sellerRepository)
+    public function __construct($vifFolder, $supplierFilename, $contactSupplierFilename, EntityManagerInterface $em, SellerRepository $sellerRepository, FileParser $fileParser)
     {
         $this->em = $em;
-        $this->contactHeaderLine = 2;
-        $this->supplierHeaderLine = 2;
+        $this->contactHeaderLine = 1;
+        $this->supplierHeaderLine = 1;
         $this->vifFolder = $vifFolder;
+        $this->fileParser = $fileParser;
         $this->supplierFilename = $supplierFilename;
         $this->sellerRepository = $sellerRepository;
         $this->contactSupplierFilename = $contactSupplierFilename;
@@ -72,11 +75,13 @@ class DataIntegrator
         $suppliers = [];
 
         try {
+            $this->fileParser->parse($this->vifFolder . $this->supplierFilename);
             $file = fopen($this->vifFolder . $this->supplierFilename, 'r');
-            while(($row = fgetcsv($file, 0, ",")) !== false)
+            while(($row = fgetcsv($file, 0, ";")) !== false)
             {
                 if ($lineNumber == $this->supplierHeaderLine) {
                     $header = $this->getHeader($row);
+                    dump($header);
                 } else if ($lineNumber > $this->supplierHeaderLine) {
                     $code = trim($row[$header['ctie']]);
                     $existingSupplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $code]);
@@ -87,6 +92,7 @@ class DataIntegrator
             }
         } catch( \Exception $e) {
             $suppliers = null;
+            dump($e->getMessage());
         } finally {
             fclose($file);
             return $suppliers;
@@ -103,12 +109,14 @@ class DataIntegrator
             $suppliers = $this->getResettedSuppliers($newSuppliers);
     
             try {
+                $this->fileParser->parse($this->vifFolder . $this->contactSupplierFilename);
                 $file = fopen($this->vifFolder . $this->contactSupplierFilename, 'r');
-                while(($row = fgetcsv($file, 0, ",")) !== false)
+                while(($row = fgetcsv($file, 0, ";")) !== false)
                 {
-                    if ($lineNumber == $this->supplierHeaderLine) {
+                    if ($lineNumber == $this->contactHeaderLine) {
                         $header = $this->getHeader($row);
-                    } else if ($lineNumber > $this->supplierHeaderLine) {
+                        dump($header);
+                    } else if ($lineNumber > $this->contactHeaderLine) {
                         $code = trim($row[$header['ctie']]);
                         $supplier = $this->getConcernedSupplier($code, $suppliers);
                         $this->setEmailsIfExists($supplier, $row, $header);
