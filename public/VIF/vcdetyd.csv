@@ -1,4 +1,3 @@
-#TYPE System.Data.DataRow
 "csoc","cetab","cnatie","ctie","ccdetyp","ni1","nlig","cart","typligne","cu1cde","cu2cde","tcmpspe","tcom","tcrit","tpvc","cupvc","tgratuit","qte1","qte2","ccond","ccondnv1","ccondnv2","ccondnv3","cuprix","lstcucde","admstamp","cacteurpre"
 "CL","01","CLT","TOT3MARES","SNACK1","1","1","V0081","NORM","P","","False","False","False","False","","False","0,0000","0,0000","","","","","P","P","1",""
 "CL","01","CLT","TOT3MARES","SNACK1","2","2","V0082","NORM","P","","False","False","False","False","","False","0,0000","0,0000","","","","","P","P","1",""

@@ -20,8 +20,8 @@ class DataIntegrator
     public function __construct($vifFolder, $supplierFilename, $contactSupplierFilename, EntityManagerInterface $em, SellerRepository $sellerRepository)
     {
         $this->em = $em;
-        $this->contactHeaderLine = 2;
-        $this->supplierHeaderLine = 2;
+        $this->contactHeaderLine = 1;
+        $this->supplierHeaderLine = 1;
         $this->vifFolder = $vifFolder;
         $this->supplierFilename = $supplierFilename;
         $this->sellerRepository = $sellerRepository;
@@ -71,12 +71,13 @@ class DataIntegrator
         $seller = $this->getSeller();
         $suppliers = [];
 
-        try {
+        // try {
             $file = fopen($this->vifFolder . $this->supplierFilename, 'r');
-            while(($row = fgetcsv($file, 0, ",")) !== false)
+            while(($row = fgetcsv($file, 0, ";")) !== false)
             {
                 if ($lineNumber == $this->supplierHeaderLine) {
                     $header = $this->getHeader($row);
+                    dump($header);
                 } else if ($lineNumber > $this->supplierHeaderLine) {
                     $code = trim($row[$header['ctie']]);
                     $existingSupplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $code]);
@@ -85,12 +86,13 @@ class DataIntegrator
                 }
                 $lineNumber++;
             }
-        } catch( \Exception $e) {
-            $suppliers = null;
-        } finally {
+        // } catch( \Exception $e) {
+        //     $suppliers = null;
+        //     dump($e->getMessage());
+        // } finally {
             fclose($file);
             return $suppliers;
-        }
+        // }
     }
 
     private function editContacts($newSuppliers)
@@ -104,11 +106,12 @@ class DataIntegrator
     
             try {
                 $file = fopen($this->vifFolder . $this->contactSupplierFilename, 'r');
-                while(($row = fgetcsv($file, 0, ",")) !== false)
+                while(($row = fgetcsv($file, 0, ";")) !== false)
                 {
-                    if ($lineNumber == $this->supplierHeaderLine) {
+                    if ($lineNumber == $this->contactHeaderLine) {
                         $header = $this->getHeader($row);
-                    } else if ($lineNumber > $this->supplierHeaderLine) {
+                        dump($header);
+                    } else if ($lineNumber > $this->contactHeaderLine) {
                         $code = trim($row[$header['ctie']]);
                         $supplier = $this->getConcernedSupplier($code, $suppliers);
                         $this->setEmailsIfExists($supplier, $row, $header);

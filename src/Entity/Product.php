@@ -145,7 +145,7 @@ class Product
     // private $tax;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Category::class)
+     * @ORM\ManyToMany(targetEntity=Category::class, cascade={"persist", "remove"})
      * @Groups({"products_read", "product_write"})
      */
     private $categories;
@@ -229,26 +229,25 @@ class Product
     // private $accountingId;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Seller::class)
+     * @ORM\ManyToOne(targetEntity=Seller::class, cascade={"persist", "remove"})
      * @Groups({"products_read", "product_write", "orders_read"})
      */
     private $seller;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Supplier::class, inversedBy="products")
+     * @ORM\ManyToMany(targetEntity=Supplier::class, cascade={"persist", "remove"}, inversedBy="products")
      * @Groups({"products_read", "product_write", "orders_read"})
      */
     private $suppliers;
-
     /**
      * @ORM\Column(type="boolean", nullable=true)
      * @Groups({"products_read", "product_write", "orders_read"})
      */
     private $isIntern;
 
+    // , cascade={"persist", "refresh"} @Groups({"not_existing"})
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="products")
-     * @Groups({"not_existing"})
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="products", cascade={"refresh"})
      */
     private $users;
 

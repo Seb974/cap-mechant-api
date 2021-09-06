@@ -255,3 +255,5 @@ CL;4010CHANE;TELEVENTE;;;;televente@chane-hive.com;;;1
 CL;4010SAKURA;CONTACT;;02 62 20 42 47;;ichirakurestaurant974@gmail.com;;06 93 93 88 00;1
 CL;4010NEPRES;NESPRESSO;;;;nespressoprofessionnel@nespresso-reunion.com;;;1
 CL;4010NEPRES;GILLES MAZUE;;;;gilles.mazue@nespresso-reunion.com;;;2
+CL;4010FR;GNETHEVE;;;;gnetheve@scafruits.com;;;1
+CL;4010MARAIC;COMMANDE;;;;commande@maraichers.re;;;2

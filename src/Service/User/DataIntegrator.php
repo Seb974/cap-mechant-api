@@ -21,7 +21,7 @@ class DataIntegrator
     {
         $this->em = $em;
         $this->encoder = $encoder;
-        $this->productHeaderLine = 2;
+        $this->productHeaderLine = 1;
         $this->vifFolder = $vifFolder;
         $this->userFilename = $userFilename;
         $this->userProductsFilename = $userProductsFilename;
@@ -33,7 +33,6 @@ class DataIntegrator
         $header = [];
         $lineNumber = 1;
         $users = [];
-
         try {
             $file = fopen($this->vifFolder . $this->userFilename, 'r');
             while(($row = fgetcsv($file, 0, ";")) !== false)
@@ -56,6 +55,7 @@ class DataIntegrator
             $this->editProducts($users);
         } catch( \Exception $e) {
             $status = 1;
+            dd($e);
         } finally {
             $this->em->flush();
             fclose($file);
@@ -70,12 +70,14 @@ class DataIntegrator
         $lineNumber = 1;
         $users = $this->getResettedUsers($editedUsers);
 
-        try {
+        // try {
             $file = fopen($this->vifFolder . $this->userProductsFilename, 'r');
             while(($row = fgetcsv($file, 0, ",")) !== false)
             {
                 if ($lineNumber == $this->productHeaderLine) {
+                    
                     $header = $this->getHeader($row);
+                    
                 } else if ($lineNumber > $this->productHeaderLine) {
                     $userCode = trim($row[$header['ctie']]);
                     $productCode = trim($row[$header['cart']]);
@@ -90,12 +92,13 @@ class DataIntegrator
                 $lineNumber++;
             }
 
-        } catch( \Exception $e) {
-            $status = 1;
-        } finally {
+        // } catch( \Exception $e) {
+        //     $status = 1;
+        //     dump($e->getMessage());
+        // } finally {
             fclose($file);
             return $status;
-        }
+        // }
     }
 
     private function getResettedUsers($editedUsers)

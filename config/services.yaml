@@ -185,6 +185,7 @@ services:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $productFilename: '%env(VIF_PRODUCTS_FILENAME)%'
             $supplierOwnerFilename: '%env(VIF_PRODUCTS_SUPPLIERS_FILENAME)%'
+            $commandTypeFileName: '%env(VIF_COMMAND_TYPE_FILENAME)%'
 
     App\Service\User\DataIntegrator:
         arguments:
