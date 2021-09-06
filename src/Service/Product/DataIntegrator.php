@@ -2,8 +2,8 @@
 
 namespace App\Service\Product;
 
-use App\Entity\Group;
 use App\Entity\User;
+use App\Entity\Group;
 use App\Entity\Price;
 use App\Entity\Stock;
 use App\Entity\Seller;
@@ -13,6 +13,7 @@ use App\Entity\Category;
 use App\Entity\Supplier;
 use App\Entity\PriceGroup;
 use App\Repository\TaxRepository;
+use App\Service\Parser\FileParser;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -27,8 +28,9 @@ class DataIntegrator
     protected $supplierOwnerFilename;
     protected $commandTypeFileName;
     protected $taxRepository;
+    protected $fileParser;
 
-    public function __construct($vifFolder, $productFilename, $supplierOwnerFilename, $commandTypeFileName,EntityManagerInterface $em, TaxRepository $taxRepository)
+    public function __construct($vifFolder, $productFilename, $supplierOwnerFilename, $commandTypeFileName,EntityManagerInterface $em, TaxRepository $taxRepository, FileParser $fileParser)
     {
         $this->em = $em;
         $this->vifFolder = $vifFolder;
@@ -36,6 +38,7 @@ class DataIntegrator
         $this->supplierOwnerFilename = $supplierOwnerFilename;
         $this->commandTypeFileName = $commandTypeFileName;
         $this->taxRepository = $taxRepository;
+        $this->fileParser = $fileParser;
     }
 
     public function editProducts()
@@ -49,12 +52,13 @@ class DataIntegrator
         try {
             $status = 0;
             ini_set('memory_limit', -1); 
+            $this->fileParser->parse($this->vifFolder . $this->productFilename);
             $file = fopen($this->vifFolder . $this->productFilename, 'r');
             while(($row = fgetcsv($file, 0, ";")) !== false)
             {
                 if ($lineNumber <= 1) {
                     $header = $this->getHeader($row);
-                    // dd($header);
+                    dump($header);
                 } else {
                 // } else if($lineNumber <= 500) {
                     $code = trim($row[$header['CODE']]);
@@ -77,10 +81,11 @@ class DataIntegrator
 
             fclose($file);
             $products = $this->editUsersProducts($products);
+            $this->editSuppliers($products);
             $this->em->flush();
             // $this->insertOrUpdateProducts($products);
             // $this->editUsersProducts();
-            // $this->editSuppliers($products);
+            
         } catch( \Exception $e) {
             $status = 1;
             dump($e->getMessage());
@@ -96,6 +101,7 @@ class DataIntegrator
         $lineNumber= 1;
         $header = [];
         //$products = [];
+        $this->fileParser->parse($this->vifFolder . $this->commandTypeFileName);
         $file = fopen($this->vifFolder . $this->commandTypeFileName, 'r');
         while(($row = fgetcsv($file, 0, ";")) !== false)
         {
@@ -256,6 +262,7 @@ class DataIntegrator
                 // ->setContentWeight(0)
                 // ->setUserGroups($userGroups)
                 // ->setCatalogs($catalogs);
+                ->setCategories(trim($row[$header['NOM CATEGORIE']]))
                 ;
         $this->setInternSupplierIfNeeded($product, $row, $header);
         return $product;
@@ -273,7 +280,7 @@ class DataIntegrator
                 ->setAvailable($available)
                 ->setIsIntern(false)
                 // ->setSupplier($supplier)
-                ->setCategories($categories);
+                ->setCategories(trim($row[$header['NOM CATEGORIE']]));
 
         $this->setInternSupplierIfNeeded($product, $row, $header);
         return $product;

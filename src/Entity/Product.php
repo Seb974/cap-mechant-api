@@ -145,7 +145,7 @@ class Product
     // private $tax;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Category::class, cascade={"persist", "remove"})
+     * @ORM\Column(type="string", length=120, nullable=true)
      * @Groups({"products_read", "product_write"})
      */
     private $categories;
@@ -466,31 +466,12 @@ class Product
     //     return $this;
     // }
 
-    /**
-     * @return Collection|Category[]
-     */
-    public function getCategories(): Collection
+    public function getCategories(): ?string
     {
         return $this->categories;
     }
 
-    public function addCategory(Category $category): self
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories[] = $category;
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(Category $category): self
-    {
-        $this->categories->removeElement($category);
-
-        return $this;
-    }
-
-    public function setCategories(Collection $categories)
+    public function setCategories(?string $categories): self
     {
         $this->categories = $categories;
 

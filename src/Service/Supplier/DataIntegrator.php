@@ -4,12 +4,14 @@ namespace App\Service\Supplier;
 
 use App\Entity\Supplier;
 use App\Repository\SellerRepository;
+use App\Service\Parser\FileParser;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DataIntegrator
 {
     protected $em;
     protected $vifFolder;
+    protected $fileParser;
     protected $supplierFilename;
     protected $sellerRepository;
     protected $contactHeaderLine;
@@ -17,12 +19,13 @@ class DataIntegrator
     protected $contactSupplierFilename;
     protected $phonePattern = "/^(?:(?:\+|00)33|(?:\+|00)39|(?:\+|00)262|0)[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/";
 
-    public function __construct($vifFolder, $supplierFilename, $contactSupplierFilename, EntityManagerInterface $em, SellerRepository $sellerRepository)
+    public function __construct($vifFolder, $supplierFilename, $contactSupplierFilename, EntityManagerInterface $em, SellerRepository $sellerRepository, FileParser $fileParser)
     {
         $this->em = $em;
         $this->contactHeaderLine = 1;
         $this->supplierHeaderLine = 1;
         $this->vifFolder = $vifFolder;
+        $this->fileParser = $fileParser;
         $this->supplierFilename = $supplierFilename;
         $this->sellerRepository = $sellerRepository;
         $this->contactSupplierFilename = $contactSupplierFilename;
@@ -71,7 +74,8 @@ class DataIntegrator
         $seller = $this->getSeller();
         $suppliers = [];
 
-        // try {
+        try {
+            $this->fileParser->parse($this->vifFolder . $this->supplierFilename);
             $file = fopen($this->vifFolder . $this->supplierFilename, 'r');
             while(($row = fgetcsv($file, 0, ";")) !== false)
             {
@@ -86,13 +90,13 @@ class DataIntegrator
                 }
                 $lineNumber++;
             }
-        // } catch( \Exception $e) {
-        //     $suppliers = null;
-        //     dump($e->getMessage());
-        // } finally {
+        } catch( \Exception $e) {
+            $suppliers = null;
+            dump($e->getMessage());
+        } finally {
             fclose($file);
             return $suppliers;
-        // }
+        }
     }
 
     private function editContacts($newSuppliers)
@@ -105,6 +109,7 @@ class DataIntegrator
             $suppliers = $this->getResettedSuppliers($newSuppliers);
     
             try {
+                $this->fileParser->parse($this->vifFolder . $this->contactSupplierFilename);
                 $file = fopen($this->vifFolder . $this->contactSupplierFilename, 'r');
                 while(($row = fgetcsv($file, 0, ";")) !== false)
                 {

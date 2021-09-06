@@ -5,6 +5,7 @@ namespace App\Service\User;
 use App\Entity\Meta;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Service\Parser\FileParser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -13,27 +14,31 @@ class DataIntegrator
     protected $em;
     protected $encoder;
     protected $vifFolder;
+    protected $fileParser;
     protected $userFilename;
     protected $productHeaderLine;
     protected $userProductsFilename;
 
-    public function __construct($vifFolder, $userFilename, $userProductsFilename, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder)
+    public function __construct($vifFolder, $userFilename, $userProductsFilename, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder, FileParser $fileParser)
     {
         $this->em = $em;
         $this->encoder = $encoder;
         $this->productHeaderLine = 1;
         $this->vifFolder = $vifFolder;
+        $this->fileParser = $fileParser;
         $this->userFilename = $userFilename;
         $this->userProductsFilename = $userProductsFilename;
     }
 
     public function editUsers()
     {
+        ini_set('mbstring.substitute_character', "none");
         $status = 0;
         $header = [];
         $lineNumber = 1;
         $users = [];
         try {
+            $this->fileParser->parse($this->vifFolder . $this->userFilename);
             $file = fopen($this->vifFolder . $this->userFilename, 'r');
             while(($row = fgetcsv($file, 0, ";")) !== false)
             {
@@ -70,7 +75,8 @@ class DataIntegrator
         $lineNumber = 1;
         $users = $this->getResettedUsers($editedUsers);
 
-        // try {
+        try {
+            $this->fileParser->parse($this->vifFolder . $this->userProductsFilename);
             $file = fopen($this->vifFolder . $this->userProductsFilename, 'r');
             while(($row = fgetcsv($file, 0, ",")) !== false)
             {
@@ -92,13 +98,13 @@ class DataIntegrator
                 $lineNumber++;
             }
 
-        // } catch( \Exception $e) {
-        //     $status = 1;
-        //     dump($e->getMessage());
-        // } finally {
+        } catch( \Exception $e) {
+            $status = 1;
+            dump($e->getMessage());
+        } finally {
             fclose($file);
             return $status;
-        // }
+        }
     }
 
     private function getResettedUsers($editedUsers)
