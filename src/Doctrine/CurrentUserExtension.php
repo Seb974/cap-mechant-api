@@ -51,7 +51,7 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
         $user = $this->security->getUser();
         $request = $this->requestStack->getCurrentRequest();
         $origin = $request->headers->get('origin');
-
+        dd($origin);
         if ($origin === $this->publicDomain && !$this->auth->isGranted('ROLE_ADMIN') && ($user instanceof User || $user == null))
         {
             $rootAlias = $queryBuilder->getRootAliases()[0];
@@ -93,8 +93,6 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
                              ->andWhere(":userId = u.id")
                              ->setParameter("userId", $user->getId());
             }
-
-           
         }
     }
 }
