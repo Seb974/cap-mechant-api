@@ -17,8 +17,10 @@ class ProvisionNotifier
             $status = 'done';
             // throw new \Exception("L'envoi du SMS a merdé");
             $message = $this->getOrderMessage($provision);
-            if (strlen($message) > 0)
-                $this->sms->sendTo($provision->getSupplier()->getPhone(), $message);
+            if (strlen($message) > 0) {
+                $smsStatus = $this->sms->sendTo($provision->getSupplier()->getPhone(), $message);
+                $status = str_contains($smsStatus, 'ERR') ? 'failed' : 'done';
+            }
         } catch (\Exception $e) {
             $status = 'failed';
         } finally {

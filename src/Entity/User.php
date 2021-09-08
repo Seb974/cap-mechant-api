@@ -38,9 +38,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     },
  *     itemOperations={
  *          "GET"={"security"="is_granted('ROLE_TEAM') or object == user"},
- *          "PUT"={"security"="is_granted('ROLE_ADMIN') or object == user"},
- *          "PATCH"={"security"="is_granted('ROLE_ADMIN') or object == user"},
- *          "DELETE"={"security"="is_granted('ROLE_ADMIN') or object == user"}
+ *          "PUT"={"security"="is_granted('ROLE_TEAM') or object == user"},
+ *          "PATCH"={"security"="is_granted('ROLE_TEAM') or object == user"},
+ *          "DELETE"={"security"="is_granted('ROLE_TEAM') or object == user"}
  *     },
  *     mercure={"private"=true, "normalization_context"={"group"="users_read"}},
  * )
@@ -88,7 +88,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToOne(targetEntity=Meta::class, inversedBy="user", cascade={"persist", "remove"})
-     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read", "provisions_read"})
      */
     private $metas;
 

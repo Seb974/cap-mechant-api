@@ -259,7 +259,7 @@ class Product
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
+        // $this->categories = new ArrayCollection();
         // $this->variations = new ArrayCollection();
         // $this->components = new ArrayCollection();
         // $this->prices = new ArrayCollection();
