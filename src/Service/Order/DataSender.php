@@ -18,6 +18,7 @@ class DataSender
     public function sendToVIF($provision)
     {
         try {
+            $status = 'done';
             $file = fopen($this->vifFolder . $this->ordersFilename, 'a');
             $this->setHeader($file, $provision);
             foreach ($provision->getGoods() as $key => $good) {
@@ -25,10 +26,12 @@ class DataSender
                 fputcsv($file, $formattedGood, $this->delimiter);
             }
         } catch(\Exception $e) {
+            $status = 'failed';
             dump($e->getMessage());
         }
         finally {
             fclose($file);
+            return $status;
         }
     }
 

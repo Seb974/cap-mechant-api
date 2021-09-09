@@ -58,13 +58,9 @@ class DataIntegrator
             {
                 if ($lineNumber <= 1) {
                     $header = $this->getHeader($row);
-                    dump($header);
                 } else {
-                // } else if($lineNumber <= 500) {
                     $code = trim($row[$header['CODE']]);
-                    // dd($code);
                     $existingProduct = $this->em->getRepository(Product::class)->findOneBy(['sku' => $code]);
-                    // dd($existingProduct);
                     if (is_null($existingProduct)) {
                         $product = $this->create($row, $header, $code);
                     } else {
@@ -72,9 +68,7 @@ class DataIntegrator
 
                     }
                     $products[] = $product;
-                    //dump($product->getName());
                     $this->em->persist($product);
-                    // dump($products);
                 }
                 $lineNumber++;
             }  
@@ -83,16 +77,13 @@ class DataIntegrator
             $products = $this->editUsersProducts($products);
             $this->editSuppliers($products);
             $this->em->flush();
-            // $this->insertOrUpdateProducts($products);
-            // $this->editUsersProducts();
             
         } catch( \Exception $e) {
             $status = 1;
             dump($e->getMessage());
         } finally {
-            // dump($status);
-            
-            return "status =  ". $status .", edit product = " . memory_get_usage()/1048576.2 . "MB";
+            // return "status =  ". $status .", edit product = " . memory_get_usage()/1048576.2 . "MB";
+            return $status;
         }
     }
 
@@ -110,21 +101,12 @@ class DataIntegrator
             } else {
                 $sku = trim($row[$header['cart']]);
                 $vifUser = trim($row[$header['ctie']]);
-                // $existingProduct = $this->em->getRepository(Product::class)->findOneBy(['sku' => $sku]);
                 $existingUser = $this->em->getRepository(User::class)->findOneBy(['vifCode' => $vifUser]);
-                // dump($existingProduct);
-                // dump($existingUser);
                 if (!is_null($existingUser)){
-                    // $key = array_search($existingProduct, $products);
                     $key = $this->getSelectedProduct($products, $sku);
                     if (!is_null($key))
                         $products[$key]->addUser($existingUser); 
-                    // = $this->setUsersProducts($row, $header, $existingProduct, $existingUser);        
                 } 
-                // else {
-                    // $result = $this->setUsersProducts($row, $header, $existingProduct, $existingUser); 
-                    // $products[] = $result;
-                // }        
             }
             $lineNumber ++;
         }
@@ -165,18 +147,12 @@ class DataIntegrator
                 $min = ($round != 0) ? $round + 1 : $round ;
                 $max = ($modulo-$floor)*600;
                 for($i = $min; $i < $max; $i ++){
-                    // if (count($productsList[$i]->getUsers()) > 0) {
-                    //     dump($productsList[$i]->getName());
-                    //     dump($productsList[$i]->getUsers());
-                    // }
 
                     if (is_null($productsList[$i]->getId()))
                         $this->em->persist($productsList[$i]); 
                     else 
                         $this->em->merge($productsList[$i]);
                 }
-                // echo "min => " . $min . " max => " . $max;
-                // dump("flush");
                 
                 $round = $max;
                 $floor--;
@@ -184,9 +160,8 @@ class DataIntegrator
             $this->em->flush();
         } catch( \Exception $e) {
             $status = 1;
-            dd($e);
         }finally{
-            $this->em->clear();
+            // $this->em->clear();
             return $status;
         }
     }
@@ -199,17 +174,14 @@ class DataIntegrator
         $products = $this->getResettedProducts($editedProducts);
         try {
             $file = fopen($this->vifFolder . $this->supplierOwnerFilename, 'r');
-            // dump($file);
             while(($row = fgetcsv($file, 0, ";")) !== false)
             {
                 if ($lineNumber <= 1) {
                     $header = $this->getHeader($row);
-                    // dump($header);
                 } else {
                     $articleCode = trim($row[$header['Article']]);
                     $supplierCode = trim($row[$header['Fourn.']]);
                     $product = $this->getConcernedProduct($articleCode, $products);
-                    // dump($product);
                     if (!is_null($product) && !$product->getIsIntern()) {
                         $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $supplierCode]);
                         $supplier->addProduct($product);
@@ -219,49 +191,27 @@ class DataIntegrator
             }
         } catch( \Exception $e) {
             $status = 1;
-            // dump("e2");
         } finally {
-            // $this->em->flush();
             fclose($file);
-            return "edit supplier = " . memory_get_usage()/1048576.2;
+            // return "edit supplier = " . memory_get_usage()/1048576.2;
+            return $status;
         }
     }
 
     private function create($row, $header, $code)
     {
-        // $tax = $this->getTax();
         $seller = $this->getSeller();
-        // $userGroups = $this->getUserGroups();
-        // $catalogs = $this->getCatalogs();
-        
-        // $stock = $this->createStock();
-        // $price = $this->createPrice();
-        // $supplier = $this->getSupplier($row, $header);
         $available = $this->getAvailability($row, $header);
-        $categories = $this->getCategories($row, $header);
+        // $categories = $this->getCategories($row, $header);
         $unit = $this->getUnit($row, $header);
         $product = new Product();
         $product->setSku($code)
                 ->setName(trim($row[$header['LIBELLE']]))
                 ->setUnit($unit)
-                ->setCategories($categories)
                 ->setAvailable($available)
                 ->setSeller($seller)
-                // ->setSupplier($supplier)
-                // ->addPrice($price)
-                // ->setTax($tax)
-                // ->setStock($stock)
-                // ->setNew(false)
                 ->setIsIntern(false)
-                // ->setStockManaged(false)
-                // ->setRequireLegalAge(false)
                 ->setWeight(0)
-                // ->setProductGroup("J + 1")
-                // ->setIsMixed(false)
-                // ->setRequireDeclaration(false)
-                // ->setContentWeight(0)
-                // ->setUserGroups($userGroups)
-                // ->setCatalogs($catalogs);
                 ->setCategories(trim($row[$header['NOM CATEGORIE']]))
                 ;
         $this->setInternSupplierIfNeeded($product, $row, $header);
@@ -271,15 +221,12 @@ class DataIntegrator
     private function update($row, $header, $product)
     {
         $available = $this->getAvailability($row, $header);
-        // $supplier = $this->getSupplier($row, $header);
-        $categories = $this->getCategories($row, $header);
-        // dd($categories);
+        // $categories = $this->getCategories($row, $header);
         $unit = $this->getUnit($row, $header);
         $product->setName(trim($row[$header['LIBELLE']]))
                 ->setUnit($unit)
                 ->setAvailable($available)
                 ->setIsIntern(false)
-                // ->setSupplier($supplier)
                 ->setCategories(trim($row[$header['NOM CATEGORIE']]));
 
         $this->setInternSupplierIfNeeded($product, $row, $header);
@@ -290,9 +237,7 @@ class DataIntegrator
     {
         $type = trim($row[$header['TYPE']]);
         $site = trim($row[$header['SITE PRODUCTION']]);
-        // dump($site);
         if ($type == "VTE" && strlen(strval($site)) > 0) {
-            // dump($type);
             $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $site]);
             $supplier->addProduct($product);
             $product->setIsIntern(true);
@@ -403,7 +348,6 @@ class DataIntegrator
 
     private function getCategories($row, $header)
     {
-        // dd($row[$header['CATEGORIE']]);
         $code = trim($row[$header['CATEGORIE']]);
         $category = strlen($code) > 0 ?
             $this->em->getRepository(Category::class)->findOneBy(['code' => $code]) :

@@ -41,13 +41,15 @@ class GetDataCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', 240);
         $io = new SymfonyStyle($input, $output);
         $entity = $input->getArgument('entity');
 
         if (!$entity) {
+            $status = $this->userIntegrator->editUsers();
             $status = $this->supplierIntegrator->editSuppliers();
             $status = $this->productIntegrator->editProducts();
-            $status = $this->userIntegrator->editUsers();
         } 
         else {
             $status = strtoupper($entity) == 'USER' ? $this->userIntegrator->editUsers() :
@@ -55,11 +57,12 @@ class GetDataCommand extends Command
                      $this->productIntegrator->editProducts());
         }
 
-        $status == 0 ? $io->success("Les données ont bien été importées.") :
-                       $io->error("Une erreur est survenue. Veuillez réessayer ultérieurement.");
-
-        return $status;
-
-        return Command::SUCCESS;
+        if ($status == 0) {
+            $io->success("Les données ont bien été importées.");
+            return Command::SUCCESS;
+        } else {
+            $io->error("Une erreur est survenue. Veuillez réessayer ultérieurement.");
+            return Command::FAILURE;
+        }
     }
 }

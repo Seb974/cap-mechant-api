@@ -17,13 +17,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     normalizationContext={"groups"={"goods_read"}},
  *     collectionOperations={
- *          "GET",
- *          "POST"={"security"="is_granted('ROLE_SELLER')"},
+ *          "GET"={"security"="is_granted('ROLE_USER')"},
+ *          "POST"={"security"="is_granted('ROLE_USER')"},
  *     },
  *     itemOperations={
- *          "GET",
- *          "PUT"={"security"="is_granted('ROLE_SELLER')"},
- *          "PATCH"={"security"="is_granted('ROLE_SELLER')"},
+ *          "GET"={"security"="is_granted('ROLE_USER')"},
+ *          "PUT"={"security"="is_granted('ROLE_USER')"},
+ *          "PATCH"={"security"="is_granted('ROLE_USER')"},
  *          "DELETE"={"security"="is_granted('ROLE_SELLER')"}
  *     },
  * )

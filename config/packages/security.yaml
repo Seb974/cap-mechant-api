@@ -76,7 +76,7 @@ security:
         - { path: ^/api/users, roles: ROLE_TEAM, methods: ['GET'] }
         - { path: ^/api/order_entities, roles: ROLE_USER, methods: ['GET'] }
         - { path: ^/api/units, roles: ROLE_ADMIN, methods: ['POST', 'PUT', 'PATCH', 'DELETE'] }
-        - { path: ^/api/suppliers, roles: ROLE_SELLER, methods: ['POST', 'PUT', 'PATCH', 'DELETE'] }
+        - { path: ^/api/suppliers, roles: ROLE_USER, methods: ['POST', 'PUT', 'PATCH', 'DELETE'] }
         - { path: ^/api,       roles: IS_AUTHENTICATED_ANONYMOUSLY }
        # - { path: ^/api/users, roles: ROLE_ADMIN, methods: ['GET', 'PUT', 'PATCH', 'DELETE'] }
         # - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }

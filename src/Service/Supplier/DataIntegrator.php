@@ -38,33 +38,6 @@ class DataIntegrator
         $status = $this->editContacts($newSuppliers);
 
         return $status;
-
-        // $status = 0;
-        // $header = [];
-        // $lineNumber = 1;
-
-        // try {
-        //     $file = fopen($this->vifFolder . $this->supplierFilename, 'r');
-        //     $header = $this->getHeader();
-        //     while(($row = fgetcsv($file, 0, ";")) !== false)
-        //     {
-        //         $code = trim($row[$header['CODE']]);
-        //         $existingSupplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $code]);
-        //         if (is_null($existingSupplier))
-        //             $supplier = $this->create($row, $header, $code);
-        //         else 
-        //             $supplier = $this->update($row, $header, $existingSupplier);
-
-        //         $this->em->persist($supplier);
-        //         $lineNumber++;
-        //     }
-        //     $this->em->flush();
-        // } catch( \Exception $e) {
-        //     $status = 1;
-        // } finally {
-        //     fclose($file);
-        //     return $status;
-        // }
     }
 
     private function createNewSuppliers()
@@ -81,7 +54,6 @@ class DataIntegrator
             {
                 if ($lineNumber == $this->supplierHeaderLine) {
                     $header = $this->getHeader($row);
-                    dump($header);
                 } else if ($lineNumber > $this->supplierHeaderLine) {
                     $code = trim($row[$header['ctie']]);
                     $existingSupplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $code]);
@@ -115,7 +87,6 @@ class DataIntegrator
                 {
                     if ($lineNumber == $this->contactHeaderLine) {
                         $header = $this->getHeader($row);
-                        dump($header);
                     } else if ($lineNumber > $this->contactHeaderLine) {
                         $code = trim($row[$header['ctie']]);
                         $supplier = $this->getConcernedSupplier($code, $suppliers);
