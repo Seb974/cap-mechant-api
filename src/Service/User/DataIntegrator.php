@@ -133,12 +133,14 @@ class DataIntegrator
         $metas = new Meta();
         $identifiant = $this->getIdentifiant($row, $header);
         $email = $this->getEmail($row, $header, $identifiant);
+        $isIntern = $this->getIsIntern(trim($row[$header['FAMILLE']]));
         $password = $this->createPassword($identifiant, $user);
         $user->setName(trim($row[$header['LIBELLE']]))
              ->setEmail($email)
              ->setVifCode($code)
              ->setRoles(["ROLE_USER"])
-             ->setPassword($password);
+             ->setPassword($password)
+             ->setIsIntern($isIntern);
 
         return $this->setMetas($metas, $user, $row, $header);
     }
@@ -148,11 +150,18 @@ class DataIntegrator
         $metas = $user->getMetas();
         $identifiant = $this->getIdentifiant($row, $header);
         $email = $this->getEmail($row, $header, $identifiant);
+        $isIntern = $this->getIsIntern(trim($row[$header['FAMILLE']]));
         $user->setName(trim($row[$header['LIBELLE']]))
              ->setEmail($email)
-             ->setRoles(["ROLE_USER"]);
+             ->setRoles(["ROLE_USER"])
+             ->setIsIntern($isIntern);
 
         return $this->setMetas($metas, $user, $row, $header);
+    }
+
+    private function getIsIntern($family)
+    {
+        return !is_null($family) && $family == "INT";
     }
 
     private function setMetas($metas, $user, $row, $header)

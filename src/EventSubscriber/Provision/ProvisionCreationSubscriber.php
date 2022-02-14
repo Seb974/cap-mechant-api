@@ -8,6 +8,7 @@ use App\Service\Stock\StockManager;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Repository\SellerRepository;
 use App\Service\Sms\ProvisionNotifier as SMSNotifier;
 use App\Service\Email\ProvisionNotifier as EmailNotifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -18,13 +19,15 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
     private $stockManager;
     private $smsNotifier;
     private $emailNotifier;
+    private $sellerRepository;
 
-    public function __construct(SMSNotifier $smsNotifier, EmailNotifier $emailNotifier, StockManager $stockManager, DataSender $dataSender)
+    public function __construct(SMSNotifier $smsNotifier, EmailNotifier $emailNotifier, StockManager $stockManager, DataSender $dataSender, SellerRepository $sellerRepository)
     {
         $this->dataSender = $dataSender;
         $this->stockManager = $stockManager;
         $this->smsNotifier = $smsNotifier;
         $this->emailNotifier = $emailNotifier;
+        $this->sellerRepository = $sellerRepository;
     }
 
     public static function getSubscribedEvents()
@@ -44,14 +47,15 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
             if ( $method == "POST" ) {
                 $status = !is_null($result->getStatus()) ? $result->getStatus() : "ORDERED";
                 $result->setStatus($status);
+                $result->setOrderDate(new \DateTime());
+                if (is_null($result->getSeller())) {
+                    $seller = $this->getDefaultSeller();
+                    $result->setSeller($seller);
+                }
             }
 
             if ($result->getStatus() == "ORDERED" && (is_null($result->getIntegrated()) || !$result->getIntegrated())) {
-                if ($result->getSupplier()->getIsIntern()) {
-                    $status = $this->dataSender->sendToVIF($result);
-                    $failure = $status === 'failed';
-                    $result->setIntegrated(!$failure);
-                } else {
+                if (!$result->getSupplier()->getIsIntern()) {
                     if (str_contains(strtoupper($result->getSendingMode()), "SMS"))
                         $smsStatus = $this->smsNotifier->notifyOrder($result);
                     if (str_contains(strtoupper($result->getSendingMode()), "EMAIL"))
@@ -63,12 +67,8 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function integrateProvision($provision)
+    private function getDefaultSeller()
     {
-        foreach ($provision->getGoods() as $good) {
-            $product = $good->getProduct();
-            $product->setLastCost($good->getPrice());
-            $this->stockManager->addToStock($good);
-        }
+        return $this->sellerRepository->find(1);
     }
 }

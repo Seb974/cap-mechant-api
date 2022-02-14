@@ -34,7 +34,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *     }
  * )
  * @ApiFilter(SearchFilter::class, properties={"supplier"="exact", "seller"="exact", "status"="partial"})
- * @ApiFilter(DateFilter::class, properties={"provisionDate"})
+ * @ApiFilter(DateFilter::class, properties={"provisionDate", "orderDate"})
  */
 class Provision
 {
@@ -99,6 +99,12 @@ class Provision
      * @Groups({"provisions_read", "provision_write"})
      */
     private $user;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"provisions_read", "provision_write"})
+     */
+    private $orderDate;
 
     public function __construct()
     {
@@ -232,6 +238,18 @@ class Provision
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getOrderDate(): ?\DateTimeInterface
+    {
+        return $this->orderDate;
+    }
+
+    public function setOrderDate(?\DateTimeInterface $orderDate): self
+    {
+        $this->orderDate = $orderDate;
 
         return $this;
     }

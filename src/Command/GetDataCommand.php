@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Service\Email\ImportNotifier;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -14,6 +15,7 @@ use App\Service\Supplier\DataIntegrator as SupplierDataIntegrator;
 
 class GetDataCommand extends Command
 {
+    protected $importNotifier;
     protected $userIntegrator;
     protected $productIntegrator;
     protected $supplierIntegrator;
@@ -21,9 +23,10 @@ class GetDataCommand extends Command
     protected static $defaultDescription = 'Get refreshed datas from VIF';
 
 
-    public function __construct(ProductDataIntegrator $productIntegrator, UserDataIntegrator $userIntegrator, SupplierDataIntegrator $supplierIntegrator)
+    public function __construct(ProductDataIntegrator $productIntegrator, UserDataIntegrator $userIntegrator, SupplierDataIntegrator $supplierIntegrator, ImportNotifier $importNotifier)
     {
         parent::__construct();
+        $this->importNotifier = $importNotifier;
         $this->userIntegrator = $userIntegrator;
         $this->productIntegrator = $productIntegrator;
         $this->supplierIntegrator = $supplierIntegrator;
@@ -31,12 +34,8 @@ class GetDataCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setDescription(self::$defaultDescription)
-            ->addArgument('entity', InputArgument::OPTIONAL, 'Select only one entity to import : user, supplier or product (void for all)');
-            // ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            // ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+        $this->setDescription(self::$defaultDescription)
+             ->addArgument('entity', InputArgument::OPTIONAL, 'Select only one entity to import : user, supplier or product (void for all)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -56,6 +55,8 @@ class GetDataCommand extends Command
                      (strtoupper($entity) == 'SUPPLIER' ? $this->supplierIntegrator->editSuppliers() :
                      $this->productIntegrator->editProducts());
         }
+
+        $this->importNotifier->notify($status);
 
         if ($status == 0) {
             $io->success("Les données ont bien été importées.");

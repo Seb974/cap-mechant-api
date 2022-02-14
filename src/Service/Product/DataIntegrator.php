@@ -3,19 +3,12 @@
 namespace App\Service\Product;
 
 use App\Entity\User;
-use App\Entity\Group;
-use App\Entity\Price;
-use App\Entity\Stock;
 use App\Entity\Seller;
-use App\Entity\Catalog;
 use App\Entity\Product;
-use App\Entity\Category;
 use App\Entity\Supplier;
-use App\Entity\PriceGroup;
 use App\Repository\TaxRepository;
 use App\Service\Parser\FileParser;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
@@ -52,6 +45,7 @@ class DataIntegrator
         try {
             $status = 0;
             ini_set('memory_limit', -1); 
+            // set_time_limit(120);
             $this->fileParser->parse($this->vifFolder . $this->productFilename);
             $file = fopen($this->vifFolder . $this->productFilename, 'r');
             while(($row = fgetcsv($file, 0, ";")) !== false)
@@ -82,16 +76,14 @@ class DataIntegrator
             $status = 1;
             dump($e->getMessage());
         } finally {
-            // return "status =  ". $status .", edit product = " . memory_get_usage()/1048576.2 . "MB";
             return $status;
         }
     }
 
-    private function editUsersProducts($products){
-        // $this->em->clear();
+    private function editUsersProducts($productsList){
         $lineNumber= 1;
         $header = [];
-        //$products = [];
+        $products = $this->getResettedUsersProducts($productsList);
         $this->fileParser->parse($this->vifFolder . $this->commandTypeFileName);
         $file = fopen($this->vifFolder . $this->commandTypeFileName, 'r');
         while(($row = fgetcsv($file, 0, ";")) !== false)
@@ -125,47 +117,6 @@ class DataIntegrator
         return null;
     }
 
-    private function setUsersProducts($row, $header, $product, $user){
-        $product->addUser($user);
-        return $product;
-    }
-
-    private function insertOrUpdateProducts($productsList){
-        ini_set('max_execution_time', 240);
-        $this->em->clear();
-        // dd($productsList);
-        $status = 0;
-        //le modulo de nombre total de produit par 500.
-        $modulo = count($productsList)/600;
-        //je cherche le chiffre entier pour ma boucle
-        // ainsi avoir le nombre d'itération pour une insertion de 500 par 500
-        $floor = floor($modulo);
-        //je commence mon tour pour la boucle for à 0;
-        $round = 0;
-        try{
-            while($floor > -1 ){
-                $min = ($round != 0) ? $round + 1 : $round ;
-                $max = ($modulo-$floor)*600;
-                for($i = $min; $i < $max; $i ++){
-
-                    if (is_null($productsList[$i]->getId()))
-                        $this->em->persist($productsList[$i]); 
-                    else 
-                        $this->em->merge($productsList[$i]);
-                }
-                
-                $round = $max;
-                $floor--;
-            }
-            $this->em->flush();
-        } catch( \Exception $e) {
-            $status = 1;
-        }finally{
-            // $this->em->clear();
-            return $status;
-        }
-    }
-
     private function editSuppliers($editedProducts)
     {
         $status = 0;
@@ -173,6 +124,7 @@ class DataIntegrator
         $lineNumber = 1;
         $products = $this->getResettedProducts($editedProducts);
         try {
+            $this->fileParser->parse($this->vifFolder . $this->supplierOwnerFilename);
             $file = fopen($this->vifFolder . $this->supplierOwnerFilename, 'r');
             while(($row = fgetcsv($file, 0, ";")) !== false)
             {
@@ -182,7 +134,7 @@ class DataIntegrator
                     $articleCode = trim($row[$header['Article']]);
                     $supplierCode = trim($row[$header['Fourn.']]);
                     $product = $this->getConcernedProduct($articleCode, $products);
-                    if (!is_null($product) && !$product->getIsIntern()) {
+                    if (!is_null($product) ) {       // && !$product->getIsIntern()
                         $supplier = $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $supplierCode]);
                         $supplier->addProduct($product);
                     }
@@ -191,9 +143,9 @@ class DataIntegrator
             }
         } catch( \Exception $e) {
             $status = 1;
+            dump($e->getMessage());
         } finally {
             fclose($file);
-            // return "edit supplier = " . memory_get_usage()/1048576.2;
             return $status;
         }
     }
@@ -202,7 +154,6 @@ class DataIntegrator
     {
         $seller = $this->getSeller();
         $available = $this->getAvailability($row, $header);
-        // $categories = $this->getCategories($row, $header);
         $unit = $this->getUnit($row, $header);
         $product = new Product();
         $product->setSku($code)
@@ -221,7 +172,6 @@ class DataIntegrator
     private function update($row, $header, $product)
     {
         $available = $this->getAvailability($row, $header);
-        // $categories = $this->getCategories($row, $header);
         $unit = $this->getUnit($row, $header);
         $product->setName(trim($row[$header['LIBELLE']]))
                 ->setUnit($unit)
@@ -266,95 +216,31 @@ class DataIntegrator
         return $editedProducts;
     }
 
-    private function createStock()
+    private function getResettedUsersProducts($editedProducts)
     {
-        $stock = new Stock;
-        $stock->setQuantity(0)
-              ->setSecurity(0)
-              ->setAlert(0);
-
-        $this->em->persist($stock);
-        return $stock;
-    }
-
-    private function createPrice()
-    {
-        $priceGroups = $this->em->getRepository(PriceGroup::class)->findAll();
-
-        $price = new Price();
-        $price->setAmount(0)
-              ->setPriceGroup($priceGroups[0]);
-
-        $this->em->persist($price);
-        return $price;
+        foreach ($editedProducts as $product) {
+                $users = $product->getUsers();
+                foreach ($users as $user) {
+                    $product->removeUser($user);
+                }
+        }
+        return $editedProducts;
     }
 
     private function getUnit($row, $header)
     {
-        return strlen(trim($row[$header['UNITE COMMANDE']])) > 0 ? trim($row[$header['UNITE COMMANDE']]) : "Kg";
-    }
-
-    private function getSupplier($row, $header)
-    {
-        $type = trim($row[$header['TYPE']]);
-        $site = trim($row[$header['SITE PRODUCTION']]);
-
-        if ($type == 'ACH')
-            return $this->em->getRepository(Supplier::class)->findOneBy(['isIntern' => false]);
-        else if (strlen($site) > 0)
-            return $this->em->getRepository(Supplier::class)->findOneBy(['vifCode' => $site]);
-        else 
-            return $this->em->getRepository(Supplier::class)->findOneBy(['isIntern' => true]);
+        return strlen( trim($row[$header['UNITE PRINCIPALE']]) ) > 0 ? trim($row[$header['UNITE PRINCIPALE']]) : "Kg";
     }
 
     private function getSeller()
     {
-        $sellers = $this->em->getRepository(Seller::class)->findAll();
-        return $sellers[0];
-    }
-
-    private function getTax()
-    {
-        $taxes = $this->taxRepository->findAll();
-        return $taxes[0];
-    }
-
-    private function getCatalogs()
-    {
-        $catalogsCollection = new ArrayCollection();
-        $catalogs = $this->em->getRepository(Catalog::class)->findAll();
-        foreach ($catalogs as $catalog) {
-            if (!$catalogsCollection->contains($catalog))
-                $catalogsCollection[] = $catalog;
-        }
-        return $catalogsCollection;
+        return $this->em->getRepository(Seller::class)->find(1);
+        // return $sellers[0];
     }
 
     private function getAvailability($row, $header)
     {
         return trim($row[$header['VALIDITE']]) === 'E';
-    }
-
-    private function getUserGroups()
-    {
-        $groupsCollection = new ArrayCollection();
-        $userGroups = $this->em->getRepository(Group::class)->findAll();
-        foreach ($userGroups as $userGroup) {
-            if (!$groupsCollection->contains($userGroup))
-                $groupsCollection[] = $userGroup;
-        }
-        return $groupsCollection;
-    }
-
-    private function getCategories($row, $header)
-    {
-        $code = trim($row[$header['CATEGORIE']]);
-        $category = strlen($code) > 0 ?
-            $this->em->getRepository(Category::class)->findOneBy(['code' => $code]) :
-            ($this->em->getRepository(Category::class)->findAll())[0];
-        $categories = new ArrayCollection();
-        $categories[] = is_null($category) ? ($this->em->getRepository(Category::class)->findAll())[0] : $category;
-        return $categories;
     }
 
     private function getHeader($row)

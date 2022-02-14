@@ -155,8 +155,7 @@ class DataIntegrator
 
     private function getSeller()
     {
-        $sellers = $this->sellerRepository->findAll();
-        return $sellers[0];
+        return $this->sellerRepository->find(1);
     }
 
     private function setPhoneIfExists(Supplier &$supplier, $row, $header)

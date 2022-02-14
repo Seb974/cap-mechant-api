@@ -185,7 +185,7 @@ services:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $productFilename: '%env(VIF_PRODUCTS_FILENAME)%'
             $supplierOwnerFilename: '%env(VIF_PRODUCTS_SUPPLIERS_FILENAME)%'
-            $commandTypeFileName: '%env(VIF_COMMAND_TYPE_FILENAME)%'
+            $commandTypeFileName: '%env(VIF_USERS_PRODUCTS_FILENAME)%'
 
     App\Service\User\DataIntegrator:
         arguments:
@@ -203,3 +203,9 @@ services:
         arguments:
             $vifFolder: '%kernel.project_dir%/public/VIF/'
             $ordersFilename: '%env(VIF_ORDERS_FILENAME)%'
+
+    App\Service\Email\ImportNotifier:
+        arguments:
+            $sender: '%env(EMAIL_SENDER)%'
+            $appName: '%env(APP_NAME)%'
+            $receptor: '%env(NOTIFICATION_RECEPTOR)%'

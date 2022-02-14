@@ -10,7 +10,7 @@ class DataSender
 
     public function __construct($vifFolder, $ordersFilename)
     {
-        $this->delimiter = ',';
+        $this->delimiter = ';';
         $this->vifFolder = $vifFolder;
         $this->ordersFilename = $ordersFilename;
     }

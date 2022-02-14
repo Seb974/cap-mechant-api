@@ -135,6 +135,12 @@ class User implements UserInterface
      */
     private $products;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read", "provisions_read", "orders_read", "order_write"})
+     */
+    private $isIntern;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -347,6 +353,18 @@ class User implements UserInterface
     public function removeProduct(Product $product): self
     {
         $this->products->removeElement($product);
+
+        return $this;
+    }
+
+    public function getIsIntern(): ?bool
+    {
+        return $this->isIntern;
+    }
+
+    public function setIsIntern(?bool $isIntern): self
+    {
+        $this->isIntern = $isIntern;
 
         return $this;
     }
