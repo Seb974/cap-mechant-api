@@ -9,6 +9,9 @@ use App\Repository\SupplierRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ORM\Entity(repositoryClass=SupplierRepository::class)
@@ -25,6 +28,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "DELETE"={"security"="is_granted('ROLE_SELLER')"}
  *     }
  * )
+ * @ApiFilter(SearchFilter::class, properties={"name"="word_start"})
+ * @ApiFilter(OrderFilter::class, properties={"name"})
  */
 class Supplier
 {

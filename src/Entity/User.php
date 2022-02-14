@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(
@@ -48,6 +49,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * @ApiFilter(UserFilterByNameAndEmailFilter::class, properties={"name"="partial", "email"="partial"})
  * @ApiFilter(UserFilterByRolesFilter::class, properties={"roles"="partial"})
  * @ApiFilter(BooleanFilter::class, properties={"isIntern"})
+ * @ApiFilter(OrderFilter::class, properties={"name"})
  */
 class User implements UserInterface
 {
