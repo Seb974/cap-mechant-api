@@ -48,10 +48,8 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
                 $status = !is_null($result->getStatus()) ? $result->getStatus() : "ORDERED";
                 $result->setStatus($status);
                 $result->setOrderDate(new \DateTime());
-                if (is_null($result->getSeller())) {
-                    $seller = $this->getDefaultSeller();
-                    $result->setSeller($seller);
-                }
+                $this->setDefaultSeller($result);
+                $this->setInternValue($result);
             }
 
             if ($result->getStatus() == "ORDERED" && (is_null($result->getIntegrated()) || !$result->getIntegrated())) {
@@ -64,6 +62,20 @@ class ProvisionCreationSubscriber implements EventSubscriberInterface
                     $result->setIntegrated(!$failure);
                 }
             }
+        }
+    }
+
+    private function setDefaultSeller(Provision $provision)
+    {
+        if (is_null($provision->getSeller())) {
+            $provision->setSeller($this->getDefaultSeller());
+        }
+    }
+
+    private function setInternValue(Provision $provision)
+    {
+        if (is_null($provision->getIsIntern())) {
+            $provision->setIsIntern($provision->getSupplier()->getIsIntern());
         }
     }
 

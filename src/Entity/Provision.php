@@ -12,6 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+
 
 /**
  * @ORM\Entity(repositoryClass=ProvisionRepository::class)
@@ -31,10 +33,11 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *         "put"={"security"="is_granted('ROLE_USER')"},
  *         "patch"={"security"="is_granted('ROLE_USER')"},
  *         "delete"={"security"="is_granted('ROLE_SELLER')"},
- *     }
+  *     }
  * )
  * @ApiFilter(SearchFilter::class, properties={"supplier"="exact", "seller"="exact", "status"="partial"})
  * @ApiFilter(DateFilter::class, properties={"provisionDate", "orderDate"})
+ * @ApiFilter(BooleanFilter::class, properties={"isIntern"})
  */
 class Provision
 {
@@ -64,9 +67,9 @@ class Provision
      */
     private $goods;
 
+    // @Groups({"provisions_read", "provision_write"})
     /**
      * @ORM\ManyToOne(targetEntity=Seller::class)
-     * @Groups({"provisions_read", "provision_write"})
      */
     private $seller;
 
@@ -105,6 +108,12 @@ class Provision
      * @Groups({"provisions_read", "provision_write"})
      */
     private $orderDate;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"provisions_read"})
+     */
+    private $isIntern;
 
     public function __construct()
     {
@@ -250,6 +259,18 @@ class Provision
     public function setOrderDate(?\DateTimeInterface $orderDate): self
     {
         $this->orderDate = $orderDate;
+
+        return $this;
+    }
+
+    public function getIsIntern(): ?bool
+    {
+        return $this->isIntern;
+    }
+
+    public function setIsIntern(?bool $isIntern): self
+    {
+        $this->isIntern = $isIntern;
 
         return $this;
     }

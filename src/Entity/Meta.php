@@ -74,9 +74,10 @@ class Meta
      */
     private $city;
 
+    // , "provisions_read"
     /**
      * @ORM\Column(type="array", nullable=true)
-     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read", "provisions_read"})
+     * @Groups({"metas_read", "users_read", "user_write", "relaypoints_read", "relaypoint_write", "orders_read", "order_write", "tourings_read", "platform_write", "platforms_read", "supervisors_read", "admin:orders_read"})
      */
     private $position = [];
 

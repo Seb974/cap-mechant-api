@@ -42,9 +42,10 @@ class Supplier
      */
     private $name;
 
+    // "provisions_read",
     /**
      * @ORM\ManyToOne(targetEntity=Seller::class)
-     * @Groups({"suppliers_read", "provisions_read", "products_read"})
+     * @Groups({"suppliers_read", "products_read"})
      */
     private $seller;
 

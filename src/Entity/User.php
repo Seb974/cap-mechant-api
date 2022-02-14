@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(
@@ -46,6 +47,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * )
  * @ApiFilter(UserFilterByNameAndEmailFilter::class, properties={"name"="partial", "email"="partial"})
  * @ApiFilter(UserFilterByRolesFilter::class, properties={"roles"="partial"})
+ * @ApiFilter(BooleanFilter::class, properties={"isIntern"})
  */
 class User implements UserInterface
 {
@@ -86,9 +88,10 @@ class User implements UserInterface
      */
     private $name;
 
+    // , "provisions_read"
     /**
      * @ORM\OneToOne(targetEntity=Meta::class, inversedBy="user", cascade={"persist", "remove"})
-     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read", "provisions_read"})
+     * @Groups({"users_read", "user_write", "supervisors_read", "admin:orders_read"})
      */
     private $metas;
 
