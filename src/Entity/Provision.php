@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ORM\Entity(repositoryClass=ProvisionRepository::class)
@@ -38,6 +38,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  * @ApiFilter(SearchFilter::class, properties={"supplier"="exact", "seller"="exact", "status"="partial"})
  * @ApiFilter(DateFilter::class, properties={"provisionDate", "orderDate"})
  * @ApiFilter(BooleanFilter::class, properties={"isIntern"})
+ * @ApiFilter(OrderFilter::class, properties={"provisionDate", "orderDate"})
  */
 class Provision
 {
